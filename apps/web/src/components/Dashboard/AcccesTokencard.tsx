@@ -1,13 +1,19 @@
 import React, { useState } from "react";
 import { Box, Text, Heading, Button, Flex, Divider, IconButton } from "@chakra-ui/react";
 import { BsQuestion } from "react-icons/bs";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 
 const AcccesTokencard: React.FC = () => {
-  const [accessToken, setAccessToken] = useState("b3b1747d58eac1");
+
+  const accessToken: any = useSelector((state: RootState) => state.auth.accessToken);
 
   const handleCopyToClipboard = () => {
     navigator.clipboard.writeText(accessToken);
   };
+
+   
+
 
   return (
     <Box  borderRadius="5px" p="4" mt="30px" mb="30px" bg="white" w="99%">

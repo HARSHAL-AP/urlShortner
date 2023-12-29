@@ -10,28 +10,28 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const data = [
-  { name: "Jan", uv: 100 },
-  { name: "Feb", uv: 200 },
-  { name: "Mar", uv: 300 },
-  { name: "Apr", uv: 250 },
-  { name: "May", uv: 359 },
-  { name: "Jun", uv: 400 },
-  { name: "Jul", uv: 250 },
-];
 
-const AnalysisCard: React.FC = () => {
+interface AnalysisCardProps{
+  title:string,
+  data:any,
+
+
+
+}
+
+
+
+const AnalysisCard: React.FC<AnalysisCardProps> = ({title,data}) => {
   return (
     <Box
       w="100%"
       h="300px"
-  
+      bg="white"
       p={4}
-      borderRadius="5px" 
-      borderWidth="1px"
-      boxShadow="lg"
+      borderRadius="15px" 
+    
     >
-      <Heading fontSize="xl" mb={4} color="teal.500">Total Clicks</Heading>
+      <Heading fontSize="xl" mb={4} color="teal.500">{title}</Heading>
 
       <ResponsiveContainer width="100%" height="90%">
         <AreaChart

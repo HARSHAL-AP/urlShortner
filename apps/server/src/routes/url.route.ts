@@ -1,6 +1,8 @@
 import express, { Router } from "express";
 import UrlController from "../controller/url.controller";
-import {verifyTokenMiddleware} from "../middleware/Userauthonticate"
+import {verifyTokenMiddleware,verifyUserAccestoken} from "../middleware/Userauthonticate"
+
+
 
 class UrlRouter {
   public path = "/url";
@@ -12,22 +14,30 @@ class UrlRouter {
   }
   private initializeRoutes() {
     
+    //Get all Data 
     this.router.get(`${this.path}/getall`, this.urlController.getAll)
    
+    //Get Urls Data on diffrant params
+    this.router.get(`${this.path}/geturls`,verifyUserAccestoken, this.urlController.getallUrlsByaccessToken)
     this.router.get(`${this.path}/tags`, verifyTokenMiddleware, this.urlController.getUrlsWithTags);
+    this.router.get(`${this.path}/alltags`,verifyUserAccestoken,this.urlController.getalltags)
+
+    this.router.get(`${this.path}/gettodaystats`,verifyUserAccestoken,this.urlController.getTodaysStats)
+    
     this.router.get(`${this.path}/sort/:sortBy`, verifyTokenMiddleware, this.urlController.getUrlsWithSorting);
     this.router.get(`${this.path}/search/:searchTerm`, verifyTokenMiddleware, this.urlController.searchUrls);
-  
-
-    this.router.post(`${this.path}/shortner`, this.urlController.shortenUrl);
     this.router.get(`${this.path}/:shortUrl`, this.urlController.redirectToOriginalUrl);
     this.router.get(`${this.path}/get/:shortUrl`, verifyTokenMiddleware, this.urlController.geturldata);
+  
+
+    //CRUD For Urls 
+    this.router.post(`${this.path}/shortner`,verifyUserAccestoken, this.urlController.shortenUrl);
     this.router.patch(`${this.path}/update/:shortUrl`, verifyTokenMiddleware, this.urlController.updateUrl);
     this.router.put(`${this.path}/update/:shortUrl`, verifyTokenMiddleware, this.urlController.updateUrl);
     this.router.delete(`${this.path}/delete/:shortUrl`, verifyTokenMiddleware, this.urlController.deleteUrl);
 
     
-  }
+  } 
 }
 
 

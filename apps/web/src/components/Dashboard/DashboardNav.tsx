@@ -79,7 +79,7 @@ const DashboardNav = () => {
               </MenuItem>
               <MenuItem>Profile</MenuItem>
               <MenuItem>Settings</MenuItem>
-              <MenuItem>Logout</MenuItem>
+              <MenuItem onClick={()=>dispatch(logout())}>Logout</MenuItem>
             </MenuList>
           </Menu>
         </Flex>

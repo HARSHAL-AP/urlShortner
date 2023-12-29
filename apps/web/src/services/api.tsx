@@ -32,6 +32,20 @@ const postData = async (data: any, path: string): Promise<any> => {
   }
 };
 
+const userLogout = async (data: any, path: string): Promise<any> => {
+  try {
+    const res: AxiosResponse = await axios.post(`${url}${path}`, data, {
+      withCredentials: true,
+    });
+  
+    console.log(res)
+  
+    return res.data;
+  } catch (error) {
+    console.error("Error posting data:", error);
+    throw error;
+  }
+};
 
 
  

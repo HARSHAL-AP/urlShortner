@@ -5,7 +5,7 @@ const urlSchema = new Schema(
   {
     originalUrl: { type: String, required: true, validate: { validator:Boolean, message: String } },
     shortUrl: { type: String, required: true },
-    createdByIp: { type: String, require: true },
+    createdByIp: { type: String, required: true },
     linkDescription: { type: String },
     title:{type:String},
     accessCount: { type: Number, default: 0 },
@@ -17,8 +17,8 @@ const urlSchema = new Schema(
       },
     ],
     tags: [{ type: String }],
-    expiryDate: { type: Date },
-    accessToken:{type:String,require:true}
+    expiryDate: { type: Date ,default:null},
+    accessToken:{type:String,required:true}
    
   },
   { timestamps: true }
