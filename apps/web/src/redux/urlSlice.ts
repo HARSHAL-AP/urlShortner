@@ -15,7 +15,7 @@ const urlSlice=createSlice({
     initialState:{...initialState},
     reducers:{
       getUrl:(state,action)=>{
-        console.log(action.payload)
+       // console.log(action.payload)
         return {
             ...initialState,
             urls:action.payload

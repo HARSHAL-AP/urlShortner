@@ -40,20 +40,30 @@ import { MdOutlineBarChart, MdOutlineDateRange } from "react-icons/md";
 
 interface LinkCardProps {
   link: {
+    title:string;
     originalUrl: string;
     shortUrl: string;
     linkDescription?: string;
     tags?: string[];
+    createdAt:string;
   };
+}
+
+const formatdate=(inputDateString:string)=>{
+  const inputDate = new Date(inputDateString);
+  const formattedDate = inputDate.toLocaleDateString('en-US',{ month: 'short', day: 'numeric', year: 'numeric' });
+
+  return formattedDate;
 }
 
 const LinkCard: React.FC<LinkCardProps> = ({ link }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isEditOpen, setEditOpen] = useState(false);
-
+ 
   const handleCopy = () => {
-    // Implement copy to clipboard logic here
+    
     navigator.clipboard.writeText(link.shortUrl);
+    
   };
 
   return (
@@ -68,7 +78,7 @@ const LinkCard: React.FC<LinkCardProps> = ({ link }) => {
     >
       <Box w="70%" textAlign="left" ml="15px">
         <Heading as="h4" size="md">
-          Title
+        {link.title}
         </Heading>
         <Link
           href={`${process.env.REACT_APP_APILINK}/url/${link.shortUrl}`}
@@ -96,7 +106,7 @@ const LinkCard: React.FC<LinkCardProps> = ({ link }) => {
           </Flex>
           <Flex alignItems="center" gap="3px">
             <MdOutlineDateRange />
-            Dec 19, 2023
+           { formatdate(link.createdAt)}
           </Flex>
           <Flex alignItems="center" gap="3px">
             <FaTag />

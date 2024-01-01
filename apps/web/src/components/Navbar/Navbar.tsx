@@ -14,8 +14,9 @@ const Navbar: React.FC<NavbarProps> = () => {
   const dispatch=useDispatch();
 
   const isAuth: any = useSelector(
-    (state: RootState) => state.auth
+    (state: RootState) => state.auth.isAuthenticated
   );
+  console.log(isAuth)
   return (
     <Flex
       as="nav"
@@ -28,14 +29,20 @@ const Navbar: React.FC<NavbarProps> = () => {
     >
       <Box ><Heading>Swiftlinks</Heading> </Box>
 
-      <Flex align="center" justify="center">
+      {!isAuth&&<Flex align="center" justify="center">
         <Button variant="outline" color="white" mr={2} onClick={()=>navigate("/login")}>
           Login
         </Button>
         <Button colorScheme="teal" variant="solid" onClick={()=>navigate("/signup")}>
           Signup
         </Button>
-      </Flex>
+      </Flex>}
+      {isAuth&&<Flex align="center" justify="center">
+        
+        <Button colorScheme="voilet" variant="outline" onClick={()=>navigate("/dashboard")}>
+          Dashboard
+        </Button>
+      </Flex>}
     </Flex>
   );
 };
