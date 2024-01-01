@@ -56,13 +56,13 @@ const Analytics = () => {
             </Flex>
             <Box w="100%" mt="20px">
               <Flex alignItems="center" m="auto" justifyContent="center">
-                {" "}
+                
                 <Heading fontSize="30px">{formattedDate} </Heading>
               </Flex>
               <Flex alignItems="center" m="auto" justifyContent="center">
-                {" "}
+                
                 <Heading fontSize="24px" color="green">
-                  85+ Clikcs{" "}
+                  85+ Clikcs
                 </Heading>
               </Flex>
             </Box>
@@ -90,7 +90,7 @@ const Analytics = () => {
               w="100%"
               mt="20px"
             >
-              {" "}
+            
               <Piecahrt />
             </Flex>
           </Box>

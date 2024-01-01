@@ -15,7 +15,7 @@ class UrlRouter {
   private initializeRoutes() {
     
     //Get all Data 
-    this.router.get(`${this.path}/getall`, this.urlController.getAll)
+    this.router.get(`${this.path}/getall`, this.urlController.getAll)//
    
     //Get Urls Data on diffrant params
     this.router.get(`${this.path}/geturls`,verifyUserAccestoken, this.urlController.getallUrlsByaccessToken)
@@ -23,6 +23,9 @@ class UrlRouter {
     this.router.get(`${this.path}/alltags`,verifyUserAccestoken,this.urlController.getalltags)
 
     this.router.get(`${this.path}/gettodaystats`,verifyUserAccestoken,this.urlController.getTodaysStats)
+    this.router.get(`${this.path}/getweaklystats`,verifyUserAccestoken,this.urlController.getWeaklysStats)
+    //For geting all stats which includes filtaring with tags and querys 
+    this.router.get(`${this.path}/getallstats`,verifyUserAccestoken,this.urlController.getAllStats)
     
     this.router.get(`${this.path}/sort/:sortBy`, verifyTokenMiddleware, this.urlController.getUrlsWithSorting);
     this.router.get(`${this.path}/search/:searchTerm`, verifyTokenMiddleware, this.urlController.searchUrls);

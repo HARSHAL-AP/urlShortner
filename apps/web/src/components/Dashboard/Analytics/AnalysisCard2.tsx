@@ -19,11 +19,10 @@ interface AnalysisCardProps {
   }[];
 }
 
-const AnalysisCard: React.FC<AnalysisCardProps> = ({ title, data }) => {
-  data=data.reverse()
-  if(data.length===0){
-    return <Box>Loading....</Box>
-  }
+const AnalysisCard2: React.FC<AnalysisCardProps> = ({ title, data }) => {
+    if(data.length===0){
+        return <Box>Loading....</Box>
+      }
   return (
     <Box
       w="100%"
@@ -34,7 +33,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({ title, data }) => {
       
     >
       <Heading fontSize="xl" mb={4} color="teal.500">
-      Url Gernated
+      Total Cliks
       </Heading>
 
       <ResponsiveContainer width="100%" height="90%">
@@ -44,7 +43,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({ title, data }) => {
           <Tooltip />
           <Area
             type="monotone"
-            dataKey={(entry) => entry.newUrls.length}
+            dataKey="totalClicksForCurrentDay"
             stroke="#8884d8"
             fill="green"
           />
@@ -54,4 +53,4 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({ title, data }) => {
   );
 };
 
-export default AnalysisCard;
+export default AnalysisCard2;

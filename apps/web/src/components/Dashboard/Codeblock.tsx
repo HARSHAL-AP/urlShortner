@@ -10,7 +10,7 @@ interface CodeBlockProps {
 const Codeblock: React.FC<CodeBlockProps> = ({ code }) => {
   return (
     <Box
-      mt={{ base: 2, md: 4 }}
+     
       p={4}
     
       borderRadius="md"
@@ -18,9 +18,7 @@ const Codeblock: React.FC<CodeBlockProps> = ({ code }) => {
       maxW="full"               
       mx={{ base: 2, md: 'auto' }} 
     >
-      <Text fontSize={{ base: 'sm', md: 'md' }} mb={2} fontWeight="bold">
-        Code Example
-      </Text>
+      
       <SyntaxHighlighter language="jsx" style={docco}>
         {code}
       </SyntaxHighlighter>
