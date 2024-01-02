@@ -11,7 +11,7 @@ import {
   HStack,
   Heading,
   FormErrorMessage,
-  Flex,
+  Flex,useToast
 } from "@chakra-ui/react";
 import { postData } from "../../services/api";
 import { useSelector, useDispatch } from "react-redux";
@@ -40,7 +40,7 @@ const Createnew: React.FC<UrlFormProps> = () => {
   const accessToken: any = useSelector(
     (state: RootState) => state.auth.accessToken
   );
-
+  const toast = useToast()
   const handleChange = (key: keyof FormData, value: string | string[]) => {
     setFormData((prevData) => ({ ...prevData, [key]: value }));
 
@@ -81,10 +81,31 @@ const Createnew: React.FC<UrlFormProps> = () => {
       return;
     }
     try {
+      toast({
+        title: 'Loading...',
+        status: 'info',
+        duration: null, 
+        isClosable: false,
+      });
       const res=await postData(formData, `/url/shortner?accessToken=${accessToken}`)
-      console.log(res)
+      toast.closeAll();
+
+      
+      toast({
+        title: 'URL shortened successfully',
+        status: 'success',
+        duration: 5000, 
+        isClosable: true,
+      });
     } catch (error) {
-      console.log(error)
+      toast.closeAll();
+
+    toast({
+      title: 'An error occurred while shortening the URL',
+      status: 'error',
+      duration: 5000,
+      isClosable: true,
+    });
     }
   
   };

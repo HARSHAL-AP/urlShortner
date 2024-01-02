@@ -18,30 +18,18 @@ import {
 } from "@chakra-ui/react";
 import LinkCard2 from "./Linkcards2";
 interface ShortenedLink {
-    longUrl: string;
-    shortUrl: string;
-    description?: string;
-    customDomain?: string;
-    tags?: string[];
-  }
-const shortenedLinks: ShortenedLink[] = [
-    {
-      longUrl: "https://example.com/long-url-1",
-      shortUrl: "https://sho.rt/abc123",
-      description: "This is a test link with a description.",
-      customDomain: "mycustomdomain.com",
-      tags: ["tag1", "tag2"],
-    },
-  ];
+  data:any
+  
+}
 
-const Mostview = () => {
+const Mostview:React.FC<ShortenedLink> = ({data}) => {
   return (
     <Box
     w="100%"
-    bg="blue.100"
+    bg="green.100"
     borderRadius="25px"
     p="20px"
-    h="400px"
+    h="600px"
     mt="20px"
   >
     <Flex>
@@ -61,9 +49,9 @@ const Mostview = () => {
         scrollbarWidth: "none",
       }}
     >
-      <LinkCard2 link={shortenedLinks[0]} />
-      <LinkCard2 link={shortenedLinks[0]} />
-      <LinkCard2 link={shortenedLinks[0]} />
+     {data&&data.map((el:any)=>{
+          return <LinkCard2 key={el._id} link={el}/>
+         })}
     </Box>
   </Box>
   )

@@ -3,11 +3,13 @@ import { create } from "domain";
 
 interface UrlState{
   urls:any;
+  analytics:any;
 }
 
 
 const initialState:UrlState={
-    urls:[]
+    urls:[],
+    analytics:{}
 }
 
 const urlSlice=createSlice({
@@ -20,8 +22,13 @@ const urlSlice=createSlice({
             ...initialState,
             urls:action.payload
         }
+      },
+      getAllstats:(state,action)=>{
+        return {
+          ...initialState,
+          analytics:action.payload
+        }
       }
-
 
 
 
@@ -31,5 +38,5 @@ const urlSlice=createSlice({
 })
 
 
-export const {getUrl}=urlSlice.actions;
+export const {getUrl,getAllstats}=urlSlice.actions;
 export default urlSlice.reducer;
