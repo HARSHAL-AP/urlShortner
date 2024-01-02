@@ -38,11 +38,12 @@ import { MdOutlineBarChart, MdOutlineDateRange } from "react-icons/md";
 
 interface LinkCardProps {
   link: {
-    longUrl: string;
+    title:string;
+    originalUrl: string;
     shortUrl: string;
-    description?: string;
-    customDomain?: string;
+    linkDescription?: string;
     tags?: string[];
+    createdAt:string;
   };
 }
 
@@ -80,27 +81,14 @@ const LinkCard2: React.FC<LinkCardProps> = ({ link }) => {
       <Box textAlign="left" ml="15px">
         
         <Heading as="h4" size="md">
-          Title
+          {link.title}
         </Heading>
         <Link href={link.shortUrl} color="blue.500" as="b">
           {link.shortUrl}
         </Link>
         <br />
-        <Link href={link.longUrl}>{link.longUrl}</Link>
-       {/* <Flex mt="5" alignItems="left" gap="30px">
-          <Flex alignItems="center" gap="3px">
-            <MdOutlineBarChart />
-            Total Clicks
-          </Flex>
-          <Flex alignItems="center" gap="3px">
-            <MdOutlineDateRange />
-            Dec 19, 2023
-          </Flex>
-          <Flex alignItems="center" gap="3px">
-            <FaTag />
-            {link.tags}
-          </Flex>
-  </Flex>*/}
+        <Link href={link.originalUrl}>{link.originalUrl}</Link>
+    
       </Box>
 
       

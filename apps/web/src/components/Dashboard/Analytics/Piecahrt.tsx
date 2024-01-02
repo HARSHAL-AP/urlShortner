@@ -1,33 +1,8 @@
 import React, { PureComponent } from 'react';
 import { RadialBarChart, RadialBar, Legend, ResponsiveContainer } from 'recharts';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../redux/store';
 
-const data = [
-    {
-      name: 'Mobail',
-      uv: 31.47,
-      pv: 2400,
-      fill: 'red',
-    },
-    {
-      name: 'Tablet',
-      uv: 26.69,
-      pv: 4567,
-      fill: 'blue',
-    },
-    {
-      name: 'E-Reader',
-      uv: 15.69,
-      pv: 1398,
-      fill: 'green',
-    },
-    {
-      name: 'Unknown',
-      uv: 8.22,
-      pv: 9800,
-      fill:"orange",
-    }
-  ];
-  
   const style = {
     top: '50%',
     right: 0,
@@ -37,7 +12,9 @@ const data = [
   
   
 const Piecahrt = (props: any) => {
- 
+ const data=useSelector(
+  (state: RootState) => state.urls.analytics.clicksByDevices
+);
 
   return (
     <RadialBarChart
@@ -55,7 +32,7 @@ const Piecahrt = (props: any) => {
         label={{ position: "insideStart", fill: "#fff" }}
         background
         
-        dataKey="uv"
+        dataKey="totalClicks"
       />
       <Legend
         iconSize={10}

@@ -10,7 +10,7 @@ import Createnew from "../pages/dashboard/Createnew";
 import PrivateRoute from "../components/PrivateRoute";
 import Analytics from "../pages/dashboard/Analytics";
 import Apiintegration from "../pages/dashboard/Apiintegration";
-
+import Url from "../pages/dashboard/Url";
 
 const Allroutes = () => {
   return (
@@ -24,6 +24,7 @@ const Allroutes = () => {
         <Route path="home" element={<PrivateRoute><DashboardHome /></PrivateRoute>} />
         <Route path="create-new" element={<PrivateRoute><Createnew /></PrivateRoute>} />
         <Route path="links" element={<PrivateRoute><Links /></PrivateRoute>} />
+        <Route path="links/:shortenid" element={<PrivateRoute><Url /></PrivateRoute>} />
         <Route path="analytics" element={<PrivateRoute><Analytics /></PrivateRoute>} />
         <Route path="api" element={<PrivateRoute><Apiintegration /></PrivateRoute>} />
       </Route>

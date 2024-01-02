@@ -9,6 +9,12 @@ import { UserAgent } from "express-useragent";
 import { join } from "path";
 import { readFileSync } from "fs";
 
+
+interface DeviceData {
+  _id: string;
+  totalClicks: number;
+}
+
 class UrlController {
   //For Geting all urls
   async getAll(req: Request, res: Response): Promise<void> {
@@ -257,9 +263,24 @@ class UrlController {
   // For Getting all urls by accestoken
   async getallUrlsByaccessToken(req: Request, res: Response): Promise<void> {
     const { accessToken } = req.body;
+    const { tags, selectedDate } = req.query;
 
     try {
-      const data = await Url.find({ accessToken });
+      let query: any = { accessToken };
+
+     
+      if (tags && typeof tags === 'string') {
+         
+          query.tags = { $in: tags.split(',') };
+      }
+
+     
+      if (selectedDate && typeof selectedDate === 'string') {
+        
+          query.createdDate = selectedDate;
+      }
+
+      const data = await Url.find(query);
       res.status(200).json({ isError: false, data });
     } catch (error) {
       res.status(500).json({ error: "Internal Server Error" });
@@ -475,18 +496,23 @@ class UrlController {
         accessToken,
       });
 
-      const clicksByDevices = await Url.aggregate([
+      var clicksByDevices = await Url.aggregate([
         {
           $unwind: "$accessLogs",
         },
         {
           $group: {
             _id: "$accessLogs.device.type",
+           
             totalClicks: { $sum: 1 },
           },
         },
       ]);
-
+      clicksByDevices=clicksByDevices.map((device: DeviceData) => ({
+        name: device._id,
+        totalClicks: device.totalClicks,
+        fill: getColorForDevice(device._id),
+      }));
       const clicksByLocation = await Url.aggregate([
         {
           $unwind: "$accessLogs",
@@ -515,3 +541,19 @@ class UrlController {
 }
 
 export default UrlController;
+
+
+const getColorForDevice = (deviceId: string) => {
+  switch (deviceId) {
+    case 'mobile':
+      return '#8884d8';
+    case 'desktop':
+      return '#83a6ed';
+    case 'tablet':
+      return '#8dd1e1';
+    case 'unknown':
+      return '#ffc658';
+    default:
+      return '#8884d8';
+  }
+};

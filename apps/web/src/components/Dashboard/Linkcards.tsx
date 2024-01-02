@@ -25,7 +25,7 @@ import {
   PopoverBody,
   ButtonGroup,
   Portal,
-  PopoverFooter,
+  PopoverFooter,Badge,useToast
 } from "@chakra-ui/react";
 
 import {
@@ -37,7 +37,7 @@ import {
   FaEllipsisV,
 } from "react-icons/fa";
 import { MdOutlineBarChart, MdOutlineDateRange } from "react-icons/md";
-
+import { useNavigate } from "react-router-dom";
 interface LinkCardProps {
   link: {
     title:string;
@@ -52,18 +52,24 @@ interface LinkCardProps {
 const formatdate=(inputDateString:string)=>{
   const inputDate = new Date(inputDateString);
   const formattedDate = inputDate.toLocaleDateString('en-US',{ month: 'short', day: 'numeric', year: 'numeric' });
-
+ 
   return formattedDate;
 }
 
 const LinkCard: React.FC<LinkCardProps> = ({ link }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isEditOpen, setEditOpen] = useState(false);
- 
+  const toast = useToast()
+  const navigate=useNavigate()
   const handleCopy = () => {
     
     navigator.clipboard.writeText(link.shortUrl);
-    
+    toast({
+      title: `Url copied to clipboard..`,
+      position: "bottom-right",
+      isClosable: true,
+      status:"success"
+    })
   };
 
   return (
@@ -98,9 +104,9 @@ const LinkCard: React.FC<LinkCardProps> = ({ link }) => {
           w="100%"
           alignItems="left"
           gap="30px"
-          
+          flexWrap="wrap"
         >
-          <Flex alignItems="center" gap="3px">
+          <Flex alignItems="center" gap="3px" >
             <MdOutlineBarChart />
             Total Clicks
           </Flex>
@@ -110,7 +116,7 @@ const LinkCard: React.FC<LinkCardProps> = ({ link }) => {
           </Flex>
           <Flex alignItems="center" gap="3px">
             <FaTag />
-            {link.tags?.map((el, index) => el)}
+            {link.tags?.map((el, index) => <Badge key={index} colorScheme='purple'> {el}</Badge>)}
           </Flex>
         </Flex>
       </Box>
@@ -122,7 +128,8 @@ const LinkCard: React.FC<LinkCardProps> = ({ link }) => {
           ml="2"
           w="35px"
           bg="pink.500"
-          color="white"
+          color="white" 
+          onClick={handleCopy}
         />
         <IconButton
           icon={<FaEye />}
@@ -131,6 +138,7 @@ const LinkCard: React.FC<LinkCardProps> = ({ link }) => {
           w="35px"
           bg="blue.500"
           color="white"
+          onClick={()=>navigate(`/dashboard/links/${link.shortUrl}`)}
         />
       </Flex>
     </Flex>

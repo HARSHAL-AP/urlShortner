@@ -17,24 +17,16 @@ import {
   Text,
 } from "@chakra-ui/react";
 import LinkCard2 from "./Linkcards2";
+import { elements } from "chart.js";
 interface ShortenedLink {
-    longUrl: string;
-    shortUrl: string;
-    description?: string;
-    customDomain?: string;
-    tags?: string[];
+    data:any
+    
   }
-const shortenedLinks: ShortenedLink[] = [
-    {
-      longUrl: "https://example.com/long-url-1",
-      shortUrl: "https://sho.rt/abc123",
-      description: "This is a test link with a description.",
-      customDomain: "mycustomdomain.com",
-      tags: ["tag1", "tag2"],
-    },
-  ];
 
-const Expirinurls = () => {
+const Expirinurls:React.FC<ShortenedLink> = ({data}) => {
+   if(data&&data.length==0){
+    return <Box display="none"></Box>
+   }
     return (
         <Box
         w="100%"
@@ -61,9 +53,11 @@ const Expirinurls = () => {
             scrollbarWidth: "none",
           }}
         >
-          <LinkCard2 link={shortenedLinks[0]} />
-          <LinkCard2 link={shortenedLinks[0]} />
-          <LinkCard2 link={shortenedLinks[0]} />
+        
+
+         {data&&data.map((el:any)=>{
+          return <LinkCard2 key={el._id} link={el}/>
+         })}
         </Box>
       </Box>
       )

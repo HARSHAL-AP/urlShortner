@@ -92,7 +92,7 @@ const Filters = () => {
     onClose: onDrawerClose,
   } = useDisclosure();
   const [data, setData] = useState([]);
-  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+  const [tags, settags] = useState<string[]>([]);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -112,7 +112,7 @@ const Filters = () => {
   }, [accessToken]);
 
   const handleFilterSelection = (value: string) => {
-    setSelectedFilters((prevFilters) => {
+    settags((prevFilters) => {
       if (prevFilters.includes(value)) {
         return prevFilters.filter((filter) => filter !== value);
       } else {
@@ -126,14 +126,25 @@ const Filters = () => {
 
     searchParams.delete("selectedFilter");
 
-    selectedFilters.forEach((filter) => {
-      searchParams.append("selectedFilter", filter);
+    tags.forEach((filter) => {
+      searchParams.append("tags", filter);
     });
 
     navigate({ search: searchParams.toString() });
 
     onDrawerClose();
   };
+
+  const clearAllFilters = () => {
+    settags([]); // Clear all selected filters
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.delete("tags");
+    navigate({ search: searchParams.toString() });
+    onDrawerClose();
+  };
+
+  // Conditionally show or hide the "Clear Filters" button based on whether filters are added
+  const isClearFiltersVisible = location.search.includes("tag");
 
   return (
     <Flex justify="left" mt="5" gap="10px" ml="20px">
@@ -143,7 +154,11 @@ const Filters = () => {
       <Button variant="outline" gap="5px" bg="white" onClick={onDrawerOpen}>
         <FaFilter /> Add Filter
       </Button>
-
+      {isClearFiltersVisible && (
+        <Button onClick={clearAllFilters} variant="outline">
+          Clear Filters
+        </Button>
+      )}
       <CustomDateFilter isOpen={isModalOpen} onClose={onModalClose} />
 
       <Drawer placement="right" onClose={onDrawerClose} isOpen={isDrawerOpen}>
@@ -159,7 +174,7 @@ const Filters = () => {
               {data.map((item) => (
                 <Checkbox
                   key={item}
-                  isChecked={selectedFilters.includes(item)}
+                  isChecked={tags.includes(item)}
                   onChange={() => handleFilterSelection(item)}
                 >
                   {item}
