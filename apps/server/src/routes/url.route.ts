@@ -19,7 +19,7 @@ class UrlRouter {
    
     //Get Urls Data on diffrant params
     this.router.get(`${this.path}/geturls`,verifyUserAccestoken, this.urlController.getallUrlsByaccessToken)
-    this.router.get(`${this.path}/tags`, verifyTokenMiddleware, this.urlController.getUrlsWithTags);
+ 
     this.router.get(`${this.path}/alltags`,verifyUserAccestoken,this.urlController.getalltags)
 
     this.router.get(`${this.path}/gettodaystats`,verifyUserAccestoken,this.urlController.getTodaysStats)
@@ -27,17 +27,17 @@ class UrlRouter {
     //For geting all stats which includes filtaring with tags and querys 
     this.router.get(`${this.path}/getallstats`,verifyUserAccestoken,this.urlController.getAllStats)
     
-    this.router.get(`${this.path}/sort/:sortBy`, verifyTokenMiddleware, this.urlController.getUrlsWithSorting);
+ 
     this.router.get(`${this.path}/search/:searchTerm`, verifyTokenMiddleware, this.urlController.searchUrls);
     this.router.get(`${this.path}/:shortUrl`, this.urlController.redirectToOriginalUrl);
-    this.router.get(`${this.path}/get/:shortUrl`, verifyTokenMiddleware, this.urlController.geturldata);
+    this.router.get(`${this.path}/get/:id`, verifyTokenMiddleware, this.urlController.geturldata);
   
 
     //CRUD For Urls 
     this.router.post(`${this.path}/shortner`,verifyUserAccestoken, this.urlController.shortenUrl);
-    this.router.patch(`${this.path}/update/:shortUrl`, verifyTokenMiddleware, this.urlController.updateUrl);
-    this.router.put(`${this.path}/update/:shortUrl`, verifyTokenMiddleware, this.urlController.updateUrl);
-    this.router.delete(`${this.path}/delete/:shortUrl`, verifyTokenMiddleware, this.urlController.deleteUrl);
+    this.router.patch(`${this.path}/update/:id`, verifyUserAccestoken, this.urlController.updateUrl);
+    this.router.put(`${this.path}/update/:id`, verifyUserAccestoken, this.urlController.updateUrl);
+    this.router.delete(`${this.path}/delete/:id`, verifyUserAccestoken, this.urlController.deleteUrl);
 
     
   } 

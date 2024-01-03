@@ -9,10 +9,22 @@ import { UserAgent } from "express-useragent";
 import { join } from "path";
 import { readFileSync } from "fs";
 
-
 interface DeviceData {
   _id: string;
   totalClicks: number;
+}
+interface AccessLog {
+  device: {
+    type: string;
+    browser: string;
+    version: string;
+    os: string;
+    platform: string;
+  };
+  _id: string;
+  ipAddress: string;
+  location: string;
+  timestamp: string;
 }
 
 class UrlController {
@@ -110,38 +122,82 @@ class UrlController {
   }
   //For geting data about urls with shortenid of url
   async geturldata(req: Request, res: Response): Promise<void> {
-    try {
-      const { shortUrl } = req.params;
-      const url = await Url.findOne({ shortUrl });
+    const { id } = req.params;
+    const { accessToken } = req.query;
 
-      if (url) {
-        res.status(200).json({ isError: false, url });
-      } else {
+    try {
+      const currentDate = new Date();
+      const statsForLastSevenDays = [];
+
+      const url = await Url.findById({ _id: id, accessToken });
+
+      if (!url) {
         res.status(404).json({ error: "URL not found" });
-      }
-    } catch (error) {
-      console.error("Error redirecting to original URL:", error);
-      res.status(500).json({ error: "Internal Server Error" });
-    }
-  }
-  //update url
-  async updateUrl(req: Request, res: Response): Promise<void> {
-    try {
-      const { shortUrl } = req.params;
-      const { originalUrl } = req.body;
-
-      if (!originalUrl) {
-        res
-          .status(400)
-          .json({ error: true, errorlog: "Original URL is required" });
         return;
       }
 
-      const url = await Url.findOneAndUpdate(
-        { shortUrl },
-        { originalUrl },
-        { new: true }
-      );
+      for (let i = 0; i < 30; i++) {
+        const currentDateStart = new Date(currentDate);
+        currentDateStart.setDate(currentDate.getDate() - i);
+        currentDateStart.setHours(0, 0, 0, 0);
+
+        const currentDateEnd = new Date(currentDateStart);
+        currentDateEnd.setHours(23, 59, 59, 999);
+
+        const totalClicksForCurrentDay = await Url.aggregate([
+          {
+            $match: {
+              _id: id,
+              "accessLogs.timestamp": {
+                $gte: currentDateStart,
+                $lte: currentDateEnd,
+              },
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              totalClicks: { $sum: "$accessCount" },
+              urls: { $push: "$$ROOT" },
+            },
+          },
+        ]);
+
+        const dayName = currentDateStart.toLocaleDateString("en-US", {
+          weekday: "short",
+        });
+
+        statsForLastSevenDays.push({
+          date: currentDateStart.toISOString().split("T")[0],
+          dayName,
+          totalClicksForCurrentDay:
+            totalClicksForCurrentDay.length > 0
+              ? totalClicksForCurrentDay[0].totalClicks
+              : 0,
+        });
+      }
+      const { locations, devices } = calculateFrequency(url.accessLogs);
+
+      res.status(200).json({
+        url,
+        statsForLastthirtyDays: statsForLastSevenDays,
+        locations,
+        devices,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+
+  //update url
+  async updateUrl(req: Request, res: Response): Promise<void> {
+    try {
+      const { id } = req.params;
+      const { originalUrl, title, tags, linkDescription, expiryDate } =req.body;
+
+     
+      const url=await Url.findByIdAndUpdate({_id:id},{ originalUrl, title, tags, linkDescription, expiryDate })
 
       if (url) {
         res.status(200).json({ updatedUrl: url });
@@ -156,9 +212,9 @@ class UrlController {
   //deleting specific Url
   async deleteUrl(req: Request, res: Response): Promise<void> {
     try {
-      const { shortUrl } = req.params;
+      const { id } = req.params;
 
-      const url = await Url.findOneAndDelete({ shortUrl });
+      const url = await Url.findByIdAndDelete({_id:id})
 
       if (url) {
         res.status(200).json({ deletedUrl: url });
@@ -170,82 +226,28 @@ class UrlController {
       res.status(500).json({ error: "Internal Server Error" });
     }
   }
-  // Get all urls with specific tags
-  async getUrlsWithTags(req: Request, res: Response): Promise<void> {
-    try {
-      const tags = req.query.tags;
-      const { accessToken } = req.body;
-
-      if (!tags) {
-        res
-          .status(400)
-          .json({ error: true, errorlog: "Tags are required for filtering" });
-        return;
-      }
-
-      const urls = await Url.find({ accessToken, tags });
-
-      res.status(200).json({ isError: false, data: urls });
-    } catch (error) {
-      console.error("Error fetching URLs with tags:", error);
-      res.status(500).json({ error: "Internal Server Error" });
-    }
-  }
-  // For sorting uls with diffrant parameters
-  async getUrlsWithSorting(req: Request, res: Response): Promise<void> {
-    try {
-      const sortBy = req.query.sortBy;
-      const { accessToken } = req.body;
-
-      let sortOptions:
-        | string
-        | { [key: string]: SortOrder | { $meta: any } }
-        | [string, SortOrder][]
-        | null
-        | undefined = {};
-
-      switch (sortBy) {
-        case "accessCount":
-          sortOptions = { accessCount: -1 }; // Sort in descending order
-          break;
-        case "createdAt":
-          sortOptions = { createdAt: -1 }; // Sort in descending order
-          break;
-
-        default:
-          res
-            .status(400)
-            .json({ error: true, errorlog: "Invalid sortBy parameter" });
-          return;
-      }
-
-      const urls = await Url.find({ accessToken }).sort(sortOptions);
-
-      res.status(200).json({ isError: false, data: urls });
-    } catch (error) {
-      console.error("Error fetching URLs with sorting:", error);
-      res.status(500).json({ error: "Internal Server Error" });
-    }
-  }
+ 
+ 
   // For Searching Url
   async searchUrls(req: Request, res: Response): Promise<void> {
     try {
       const { searchTerm } = req.params;
-      const { accessToken } = req.body;
-
+      const { accessToken } = req.query;
+  
       const urls = await Url.find({
         accessToken,
         $or: [
-          { shortUrl: searchTerm },
-          { title: { $regex: new RegExp(searchTerm, "i") } },
+          { shortUrl: { $regex: '\\b' + searchTerm, $options: 'i' } },
+          { title: { $regex: '\\b' + searchTerm, $options: 'i' } },
           { tags: { $in: [searchTerm] } },
         ],
       });
-
+  
+  
       res.status(200).json({ isError: false, data: urls });
     } catch (error) {
       console.error("Error searching URLs:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      res.status(500).json({ error: "Internal Server Error"});
     }
   }
   // for getting all tags associated with accesstoken
@@ -268,16 +270,12 @@ class UrlController {
     try {
       let query: any = { accessToken };
 
-     
-      if (tags && typeof tags === 'string') {
-         
-          query.tags = { $in: tags.split(',') };
+      if (tags && typeof tags === "string") {
+        query.tags = { $in: tags.split(",") };
       }
 
-     
-      if (selectedDate && typeof selectedDate === 'string') {
-        
-          query.createdDate = selectedDate;
+      if (selectedDate && typeof selectedDate === "string") {
+        query.createdDate = selectedDate;
       }
 
       const data = await Url.find(query);
@@ -503,12 +501,12 @@ class UrlController {
         {
           $group: {
             _id: "$accessLogs.device.type",
-           
+
             totalClicks: { $sum: 1 },
           },
         },
       ]);
-      clicksByDevices=clicksByDevices.map((device: DeviceData) => ({
+      clicksByDevices = clicksByDevices.map((device: DeviceData) => ({
         name: device._id,
         totalClicks: device.totalClicks,
         fill: getColorForDevice(device._id),
@@ -542,18 +540,45 @@ class UrlController {
 
 export default UrlController;
 
-
 const getColorForDevice = (deviceId: string) => {
   switch (deviceId) {
-    case 'mobile':
-      return '#8884d8';
-    case 'desktop':
-      return '#83a6ed';
-    case 'tablet':
-      return '#8dd1e1';
-    case 'unknown':
-      return '#ffc658';
+    case "mobile":
+      return "#8884d8";
+    case "desktop":
+      return "#83a6ed";
+    case "tablet":
+      return "#8dd1e1";
+    case "unknown":
+      return "#ffc658";
     default:
-      return '#8884d8';
+      return "#8884d8";
   }
+};
+
+const calculateFrequency = (accessLogs: any) => {
+  const locationMap: Record<string, number> = {};
+  const deviceMap: Record<string, number> = {};
+
+  for (const accessLog of accessLogs) {
+    const { location, device } = accessLog;
+    const deviceType = device.type;
+
+    // Increment frequency for locations
+    locationMap[location] = (locationMap[location] || 0) + 1;
+
+    // Increment frequency for devices
+    deviceMap[deviceType] = (deviceMap[deviceType] || 0) + 1;
+  }
+
+  // Convert maps to arrays of objects
+  const locations = Object.keys(locationMap).map((name) => ({
+    name,
+    frequency: locationMap[name],
+  }));
+  const devices = Object.keys(deviceMap).map((name) => ({
+    name,
+    frequency: deviceMap[name],
+  }));
+
+  return { locations, devices };
 };

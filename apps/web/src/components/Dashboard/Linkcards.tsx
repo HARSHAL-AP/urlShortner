@@ -40,6 +40,7 @@ import { MdOutlineBarChart, MdOutlineDateRange } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 interface LinkCardProps {
   link: {
+    _id:string;
     title:string;
     originalUrl: string;
     shortUrl: string;
@@ -127,7 +128,7 @@ const LinkCard: React.FC<LinkCardProps> = ({ link }) => {
           aria-label="View More Options"
           ml="2"
           w="35px"
-          bg="pink.500"
+          bg="green.500"
           color="white" 
           onClick={handleCopy}
         />
@@ -138,7 +139,7 @@ const LinkCard: React.FC<LinkCardProps> = ({ link }) => {
           w="35px"
           bg="blue.500"
           color="white"
-          onClick={()=>navigate(`/dashboard/links/${link.shortUrl}`)}
+          onClick={()=>navigate(`/dashboard/links/${link._id}`)}
         />
       </Flex>
     </Flex>
