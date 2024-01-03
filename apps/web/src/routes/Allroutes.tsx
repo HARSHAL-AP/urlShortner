@@ -24,7 +24,7 @@ const Allroutes = () => {
         <Route path="home" element={<PrivateRoute><DashboardHome /></PrivateRoute>} />
         <Route path="create-new" element={<PrivateRoute><Createnew /></PrivateRoute>} />
         <Route path="links" element={<PrivateRoute><Links /></PrivateRoute>} />
-        <Route path="links/:shortenid" element={<PrivateRoute><Url /></PrivateRoute>} />
+        <Route path="links/:id" element={<PrivateRoute><Url /></PrivateRoute>} />
         <Route path="analytics" element={<PrivateRoute><Analytics /></PrivateRoute>} />
         <Route path="api" element={<PrivateRoute><Apiintegration /></PrivateRoute>} />
       </Route>

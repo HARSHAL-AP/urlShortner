@@ -50,7 +50,7 @@ const Links = () => {
           : `?accessToken=${accestoken}`;
         const response = await getData(`/url/geturls${queryParams}`);
         dispatch(getUrl(response.data));
-        console.log(data);
+        
       } catch (error) {
         alert("Internal Server Error");
       } finally {

@@ -37,6 +37,7 @@ const Apiintegration = () => {
   tags: ["string"],
   expiryDate:"Date"
 }`;
+const reponce=`{ isError: false, shortUrl:Shortne URL  }`
 
   return (
     <Box w="99%" bg="white" borderRadius="15px" p="15px" textAlign="left">
@@ -113,7 +114,34 @@ const Apiintegration = () => {
           </Text>
         </Box>
         <Box w="70%">
-          <Codeblock code={schimaforPostreq} />
+          <Codeblock code={reponce} />
+        </Box>
+      </Flex>
+
+      <Heading size="md" ml="22px" mt="30px" color="blue.800">
+        How To visit Shortne URL
+      </Heading>
+
+      <Flex w={{ base: "80%", md: "50%" }} ml="5%" mt="25px">
+        <Box w="30%">
+          <Text fontSize="17px" as="b">
+            Method:
+          </Text>
+        </Box>
+        <Box w="70%">
+          <Text fontSize="17px" as="b" ml="4">
+           GET
+          </Text>
+        </Box>
+      </Flex>
+      <Flex w={{ base: "80%", md: "50%" }} ml="5%" mt="15px" alignItems="center">
+        <Box w="30%">
+          <Text fontSize="17px" as="b">
+            Endpoint
+          </Text>
+        </Box>
+        <Box w="70%">
+          <Codeblock code="http://localhost:8080/url/shortUrl" />
         </Box>
       </Flex>
     </Box>

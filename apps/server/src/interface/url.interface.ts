@@ -1,5 +1,17 @@
 import { Document } from "mongoose";
-
+export interface AccessLog {
+    ipAddress: string;
+    location: string;
+    timestamp: Date;
+    device:{
+            type:any;
+            browser:any;
+            version:any;
+            os:any;
+            platform:any;
+    };
+  }
+  
 export interface UrlModel extends Document {
     originalUrl: string;
     shortUrl: string;
@@ -29,5 +41,6 @@ export interface UrlModel extends Document {
     tags: Array<string>;
     expiryDate?: Date; 
     accessToken:string;
-    
+   
+
 }

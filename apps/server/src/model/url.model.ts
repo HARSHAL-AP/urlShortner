@@ -41,6 +41,7 @@ const urlSchema = new Schema(
     tags: [{ type: String }],
     expiryDate: { type: Date, default: null },
     accessToken: { type: String, required: true },
+    
   },
   { timestamps: true }
 );

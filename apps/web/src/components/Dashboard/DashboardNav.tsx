@@ -15,7 +15,7 @@ import {
   Heading,
   useBreakpointValue,
   Box,
-  Spacer,VStack,Divider,Button
+  Spacer,VStack,Divider,Button,InputRightElement
 } from "@chakra-ui/react";
 import { SearchIcon, MoonIcon, SunIcon, HamburgerIcon } from "@chakra-ui/icons";
 import Sidebar from "./Sidebar";
@@ -26,18 +26,36 @@ import { useNavigate } from "react-router-dom";
 import { Link as RouterLink } from 'react-router-dom';
 import { FaHome, FaLink, FaChartBar, FaCog, FaPlus } from 'react-icons/fa'; 
 import { FaUser } from "react-icons/fa6";
+import { getUrl } from "../../redux/urlSlice";
+import { getData } from "../../services/api";
 
 const DashboardNav = () => {
   const [ismobail,setismobail]=useState(false)
+  const [text,settext]=useState("")
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const [loading,setloading]=useState(false)
   const user: any = useSelector((state: RootState) => state.auth.user);
-
+  const accesToken: any = useSelector((state: RootState) => state.auth.accessToken);
   const handleSidebarToggle = () => {
     setismobail(!ismobail)
   };
+  
+  const handleSubmit=async()=>{
+ 
+   try {
+    const responce=await getData(`/url/search/${text}?accessToken=${accesToken}`)
+     dispatch(getUrl(responce.data))
+     navigate("/dashboard/links")
+   } catch (error) {
+    console.log(error)
+   }
    
+}
+
+ 
+
+
   return (
     <>
       <Flex
@@ -61,9 +79,10 @@ const DashboardNav = () => {
        </Text>
     
       
-          <InputGroup maxW="350px" bg="white">
-            <InputLeftElement pointerEvents="none" children={<SearchIcon />} />
-            <Input type="text" placeholder="Search..." />
+          <InputGroup maxW="350px" bg="white" >
+          
+            <Input type="text" placeholder="Search..." value={text} onChange={(e)=>settext(e.target.value)}/>
+            <InputRightElement  children={<SearchIcon />} onClick={handleSubmit} cursor="pointer"/>
           </InputGroup>
 
           <Menu>
@@ -78,7 +97,6 @@ const DashboardNav = () => {
                 <Text fontWeight="bold">{user.userName}</Text>
               </MenuItem>
               <MenuItem>Profile</MenuItem>
-              <MenuItem>Settings</MenuItem>
               <MenuItem onClick={()=>dispatch(logout())}>Logout</MenuItem>
             </MenuList>
           </Menu>

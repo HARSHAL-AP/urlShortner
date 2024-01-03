@@ -23,8 +23,7 @@ const postData = async (data: any, path: string): Promise<any> => {
       withCredentials: true,
     });
   
-    console.log(res)
-  
+    
     return res.data;
   } catch (error) {
     console.error("Error posting data:", error);
@@ -32,14 +31,44 @@ const postData = async (data: any, path: string): Promise<any> => {
   }
 };
 
+const updateData=async(data:any,path:string):Promise<any>=>{
+ try {
+   const res:AxiosResponse=await axios.patch(`${url}${path}`, data, {
+    withCredentials: true,
+  });
+  
+  return res.data;
+
+} catch (error) {
+  console.error("Error posting data:", error);
+    throw error;
+ }
+
+
+
+}
+const deletData=async(path:string):Promise<any>=>{
+  try {
+    const res:AxiosResponse=await axios.delete(`${url}${path}`,{
+     withCredentials: true,
+   });
+   
+   return res.data;
+ 
+ } catch (error) {
+   console.error("Error posting data:", error);
+     throw error;
+  }
+ 
+ 
+ 
+ }
+ 
 const userLogout = async (data: any, path: string): Promise<any> => {
   try {
     const res: AxiosResponse = await axios.post(`${url}${path}`, data, {
       withCredentials: true,
     });
-  
-    console.log(res)
-  
     return res.data;
   } catch (error) {
     console.error("Error posting data:", error);
@@ -49,4 +78,4 @@ const userLogout = async (data: any, path: string): Promise<any> => {
 
 
  
-export { getData, postData };
+export { getData, postData ,updateData,deletData};
