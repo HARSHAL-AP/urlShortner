@@ -22,7 +22,7 @@ interface AuthActions {
 
 const initialState: AuthState = {
   isAuthenticated:!!localStorage.getItem("isAuth"),
-  accessToken: undefined,
+  accessToken:localStorage.getItem('accessToken')|| undefined,
   authToken: localStorage.getItem('authToken') || undefined,
   user: null,
 };
@@ -32,19 +32,22 @@ const authSlice = createSlice({
   initialState: { ...initialState },
   reducers: {
     login: (state, action: PayloadAction<AuthActions>) => {
-      localStorage.setItem("authToken", action.payload.authToken);
-      localStorage.setItem("isAuth",String(true))
-      return {
-        ...state,
-        isAuthenticated: true,
-        authToken: action.payload.authToken,
-        accessToken: action.payload.accessToken,
-        user: action.payload.user,
-      };
+      console.log(action.payload)
+     localStorage.setItem("accessToken", action.payload.authToken);
+     localStorage.setItem("authToken", action.payload.accessToken);
+     localStorage.setItem("isAuth",String(true))
+     return {
+      ...state,
+       isAuthenticated: true,
+       authToken: action.payload.authToken,
+       accessToken: action.payload.accessToken,
+      user: action.payload.user,
+     };
     },
     checkAuth: (state, action: PayloadAction<AuthActions>) => {
       localStorage.setItem("authToken", action.payload.authToken);
       localStorage.setItem("isAuth",String(true))
+      localStorage.setItem("accessToken", action.payload.authToken);
       return {
         ...state,
         isAuthenticated: true,
@@ -54,6 +57,7 @@ const authSlice = createSlice({
       };
     },
     logout: (state) => {
+      localStorage.removeItem("accessToken");
       localStorage.removeItem("authToken");
       localStorage.removeItem("isAuth");
       return {

@@ -33,7 +33,7 @@ const AcccesTokencard: React.FC = () => {
         How to Use
       </Text>
       <Flex w="100%" mt="25px" gap="30px" alignItems="center">
-       <Box  as='button' w="45px" h="45px"  >
+       <Box   w="45px" h="45px"  >
        <IconButton
             aria-label="Dashboard"
             icon={<BsQuestion/>}

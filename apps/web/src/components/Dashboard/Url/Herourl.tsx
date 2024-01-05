@@ -115,10 +115,7 @@ const Herourl: React.FC<Herourl> = ({ link }) => {
 
   const handleChange = (key: keyof FormData, value: string | string[]) => {
     setFormData((prevData) => ({ ...prevData, [key]: value }));
-
-    // Clear the URL error when the user modifies the URL
- 
-  };
+   };
 
   const handleTagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewTag(e.target.value);

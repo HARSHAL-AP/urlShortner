@@ -16,7 +16,11 @@ import { useNavigate } from 'react-router-dom';
 import { login } from '../../redux/authSlice';
 import { useDispatch,useSelector } from 'react-redux';
 
-const Login: React.FC = () => {
+interface LoginProps {
+  onSignupLinkClick: () => void;
+}
+
+const Login: React.FC<LoginProps> = ({ onSignupLinkClick }) => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [isEmailValid, setIsEmailValid] = useState(true);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -69,26 +73,18 @@ const Login: React.FC = () => {
   };
 
   return (
-    <>
-      <ChakraProvider>
-        <ColorModeScript initialColorMode="light" />
-        <Box
-          width="100vw"
-          height="100vh"
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          bgGradient="linear(to-r, teal.500, green.500)"
-        >
-          <VStack spacing={8} w="400px" p={8} bg="white" borderRadius="xl" boxShadow="md">
+ 
+     
+        
+          <VStack spacing={8} w="100%" p={8}  mt="20vh">
             <Heading
               textAlign="center"
-              size="xl"
+              size="md"
               fontWeight="bold"
-              bgGradient="linear(to-r, teal.500, green.500)"
-              bgClip="text"
+              
+             
             >
-              SwiftLink
+              Sign In
             </Heading>
             {iserror&& <Text color="red" as="b">Invalid Credentials....</Text>}
            
@@ -113,19 +109,17 @@ const Login: React.FC = () => {
               value={formData.password}
               onChange={handleInputChange}
             />
-            <Button colorScheme="teal" variant="solid" onClick={handleLogin}>
+            <Button colorScheme="blue" variant="solid" onClick={handleLogin} w="100%">
               Log in
             </Button>
             <Text fontSize="sm" textAlign="center">
               Don't have an account?{' '}
-              <Link color="teal.500" href="/signup">
+              <Link color="blue" onClick={onSignupLinkClick}>
                 Sign up
               </Link>
             </Text>
           </VStack>
-        </Box>
-      </ChakraProvider>
-    </>
+   
   );
 };
 

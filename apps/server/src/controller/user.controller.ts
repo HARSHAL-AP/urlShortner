@@ -91,7 +91,7 @@ class UserController {
       });
       res.status(201).json({
         isError: false,
-        authTokne:token,
+        authToken:token,
         accessToken: user.accessToken,
         message: "User registered successfully",
       });
@@ -160,7 +160,7 @@ class UserController {
       res.status(200).json({
         isError: false,
         accessToken: user.accessToken,
-        authTokne:token,
+        authToken:token,
         user: {
           userName: user.userName,
           email: user.email,

@@ -23,7 +23,7 @@ import {
   PopoverArrow,
   PopoverCloseButton,
   PopoverBody,
-  ButtonGroup,
+  ButtonGroup,useToast
 } from "@chakra-ui/react";
 
 import {
@@ -35,65 +35,74 @@ import {
   FaEllipsisV,
 } from "react-icons/fa";
 import { MdOutlineBarChart, MdOutlineDateRange } from "react-icons/md";
-
+import { useNavigate } from "react-router-dom";
 interface LinkCardProps {
   link: {
-    title:string;
+    title: string;
     originalUrl: string;
     shortUrl: string;
     linkDescription?: string;
     tags?: string[];
-    createdAt:string;
+    createdAt: string;
+    _id:string;
   };
 }
 
 const LinkCard2: React.FC<LinkCardProps> = ({ link }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isEditOpen, setEditOpen] = useState(false);
-
+  const toast = useToast()
+  const navigate=useNavigate()
   const handleCopy = () => {
-    // Implement copy to clipboard logic here
-    navigator.clipboard.writeText(link.shortUrl);
+    navigator.clipboard.writeText(`${process.env.REACT_APP_APILINK}/url/${link.shortUrl}`);
+    toast({
+      title: `Url copied to clipboard..`,
+      position: "bottom-right",
+      isClosable: true,
+      status:"success"
+    })
   };
 
   const handleEdit = () => {
     setEditOpen(true);
-    // You may want to pass the link data to the modal for editing
   };
 
   const handleView = () => {
-    // Implement view more options logic here
-    // For simplicity, just toggle the modal
     onOpen();
   };
 
-  const handleDelete = () => {
-    // Implement delete logic here
-  };
+  const handleDelete = () => {};
 
   const handleModalClose = () => {
     setEditOpen(false);
     onClose();
   };
+  const handleLinkClick = () => {
+    const newUrl = `http://localhost:8080/url/${link.shortUrl}`;
+    window.open(newUrl, '_blank'); 
+  };
 
   return (
-    <Flex w="99%" p="25px" borderWidth="1px" borderRadius="lg" mt="5px" justifyContent="space-between" bg="white">
+    <Flex
+      w="99%"
+      p="25px"
+      borderWidth="1px"
+      borderRadius="lg"
+      mt="5px"
+      justifyContent="space-between"
+      bg="white"
+    >
       <Box textAlign="left" ml="15px">
-        
         <Heading as="h4" size="md">
           {link.title}
         </Heading>
-        <Link href={link.shortUrl} color="blue.500" as="b">
+        <Link  onClick={handleLinkClick} color="blue.500" as="b">
           {link.shortUrl}
         </Link>
         <br />
         <Link href={link.originalUrl}>{link.originalUrl}</Link>
-    
       </Box>
 
-      
-     
-      {/* View Modal */}
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
@@ -110,38 +119,27 @@ const LinkCard2: React.FC<LinkCardProps> = ({ link }) => {
         </ModalContent>
       </Modal>
 
-      <Flex justifyContent="flex-end" flexDirection={{ base: "column", md: "row"} }>
-          <IconButton
-            icon={<FaCopy />}
-            aria-label="Copy Link"
-            onClick={handleCopy}
-          />
-          
-          <Popover>
-            <PopoverTrigger>
-              <IconButton
-                icon={<FaEllipsisV />}
-                aria-label="View More Options"
-                ml="2"
-              />
-            </PopoverTrigger>
-            <PopoverContent>
-              <PopoverArrow />
-              <PopoverCloseButton />
-              <PopoverHeader>More Options</PopoverHeader>
-              <PopoverBody>
-                <ButtonGroup>
-                  <Button leftIcon={<FaTrash />} onClick={handleDelete}>
-                    Delete
-                  </Button>
-                  <Button leftIcon={<FaEye />} >
-                    View More
-                  </Button>
-                </ButtonGroup>
-              </PopoverBody>
-            </PopoverContent>
-          </Popover>
-        </Flex>
+      <Flex
+        justifyContent="flex-end"
+        flexDirection={{ base: "column", md: "row" }}
+      >
+        <IconButton
+          icon={<FaCopy />}
+          aria-label="Copy Link"
+          onClick={handleCopy}
+          bg="green.500"
+          color="white" 
+        />
+           <IconButton
+              icon={<FaEye />}
+              aria-label="View More Options"
+              ml="2"
+              bg="blue.500"
+              color="white"
+              onClick={()=>navigate(`/dashboard/links/${link._id}`)}
+            />
+        
+      </Flex>
     </Flex>
   );
 };

@@ -2,7 +2,7 @@ import React, { ReactNode, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-import { getData} from "../services/api"; // Define ApiResponse type
+import { getData} from "../services/api"; 
 import { login, checkAuth, logout } from "../redux/authSlice";
 import { useDispatch } from "react-redux";
 
