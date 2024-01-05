@@ -64,9 +64,9 @@ const deletData=async(path:string):Promise<any>=>{
  
  }
  
-const userLogout = async (data: any, path: string): Promise<any> => {
+const userLogout = async ( path: string): Promise<any> => {
   try {
-    const res: AxiosResponse = await axios.post(`${url}${path}`, data, {
+    const res: AxiosResponse = await axios.get(`${url}${path}`, {
       withCredentials: true,
     });
     return res.data;
@@ -78,4 +78,4 @@ const userLogout = async (data: any, path: string): Promise<any> => {
 
 
  
-export { getData, postData ,updateData,deletData};
+export { getData, postData ,updateData,deletData,userLogout};

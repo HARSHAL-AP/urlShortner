@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import jwt from "jsonwebtoken";
+import jwt,{ TokenExpiredError} from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import User from "../model/user.model";
 import { UserModel } from "../interface/user.interface";
@@ -221,39 +221,60 @@ class UserController {
 
   async logout(req: Request, res: Response): Promise<void> {
     try {
+      const { token } = req.query;
+  
+      if (!token) {
+        res.status(400).json({
+          isError: true,
+          message: "Token is missing in the query parameters",
+        });
+        return;
+      }
+  
       res.clearCookie("authtoken", {
         httpOnly: false,
         secure: false,
         sameSite: "lax",
       });
-
-      const token = req.headers.authorization?.replace("Bearer ", "");
-
-      const decodedToken = jwt.verify(token || "", key || "") as {
-        userId: string;
-      };
-
-      const user = await User.findById(decodedToken.userId);
-
-      if (user) {
-        user.isActive = false;
-        await user.save();
-
-        res.status(200).json({
-          isError: false,
-          message: "Logout successful",
-        });
-      } else {
-        res.status(404).json({
-          isError: true,
-          message: "User not found",
-        });
+  
+      try {
+        const decodedToken = jwt.verify(token as string, key || "") as { userId: string };
+  
+        const user = await User.findById(decodedToken.userId);
+  
+        if (user) {
+          user.isActive = false;
+          await user.save();
+  
+          res.status(200).json({
+            isError: false,
+            message: "Logout successful",
+          });
+        } else {
+          res.status(404).json({
+            isError: true,
+            message: "User not found",
+          });
+        }
+      } catch (error) {
+        if (error instanceof TokenExpiredError) {
+          res.status(401).json({
+            isError: true,
+            message: "Token expired. User logged out.",
+          });
+        } else {
+          console.error("Error during logout:", error);
+          res.status(500).json({
+            isError: true,
+            message: "Internal server error",
+          });
+        }
       }
     } catch (error) {
-      console.error("Error during logout:", error);
+      console.error("Error clearing cookie:", error);
       res.status(500).json({
         isError: true,
-        error,
+        message: "Internal server error",
       });
     }
   }
