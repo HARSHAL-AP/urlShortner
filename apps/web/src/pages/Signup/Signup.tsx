@@ -18,7 +18,12 @@ import { postData } from '../../services/api';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../../redux/authSlice';
 import { useDispatch } from 'react-redux';
-const Signup: React.FC = () => {
+interface SignupProps {
+  onLoginLinkClick: () => void;
+}
+
+const Signup: React.FC<SignupProps> = ({ onLoginLinkClick }) => {
+
   const [formData, setFormData] = useState({
     userName: '',
     email: '',
@@ -44,9 +49,10 @@ const Signup: React.FC = () => {
     postData({...formData},"/user/register").then((r)=>{
       if(!r.isError){
         console.log(r)
-        dispatch(login(r.accessToken))
+        dispatch(login(r))
         alert("Registration successful")
         navigate("/dashboard/home")
+       
       }
      
      }).catch((e)=>{
@@ -58,18 +64,11 @@ const Signup: React.FC = () => {
  
 
   return (
-    <>
-      <Box
-        width="100vw"
-        height="100vh"  
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-        bgGradient="linear(to-r, teal.500, green.500)"
-      >
-        <VStack spacing={8} w="400px" p={8} bg="white" borderRadius="xl" boxShadow="md">
+    
+   
+        <VStack spacing={8} w="100%" p={8} bg="white" >
           <Heading textAlign="center" size="xl" fontWeight="bold">
-            SwiftLink Signup
+           Create Account
           </Heading>
 
           <FormControl>
@@ -111,19 +110,18 @@ const Signup: React.FC = () => {
             </FormHelperText>
           </FormControl>
 
-          <Button colorScheme="teal" variant="solid" onClick={handleFormSubmit}>
+          <Button w="100%" colorScheme="blue" variant="solid" onClick={handleFormSubmit}>
             Sign up
           </Button>
 
           <Text fontSize="sm" textAlign="center">
             Already have an account?{' '}
-            <Link color="teal.500" href="/login">
+            <Link color="blue"  onClick={onLoginLinkClick}>
               Log in
             </Link>
           </Text>
         </VStack>
-      </Box>
-    </>
+     
   );
 };
 

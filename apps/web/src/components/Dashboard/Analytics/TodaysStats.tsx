@@ -38,7 +38,7 @@ const TodaysStats = (props: Props) => {
 
   },[accessToken])
 
- console.log(data)
+
   return (
     <Flex
           alignItems="center"

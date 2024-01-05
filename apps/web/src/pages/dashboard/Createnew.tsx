@@ -16,6 +16,7 @@ import {
 import { postData } from "../../services/api";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/store";
+import { useNavigate } from "react-router-dom";
 interface UrlFormProps {}
 
 interface FormData {
@@ -37,6 +38,7 @@ const Createnew: React.FC<UrlFormProps> = () => {
 
   const [newTag, setNewTag] = React.useState<string>("");
   const [urlError, setUrlError] = React.useState<string | null>(null);
+  const navigate=useNavigate()
   const accessToken: any = useSelector(
     (state: RootState) => state.auth.accessToken
   );
@@ -44,7 +46,7 @@ const Createnew: React.FC<UrlFormProps> = () => {
   const handleChange = (key: keyof FormData, value: string | string[]) => {
     setFormData((prevData) => ({ ...prevData, [key]: value }));
 
-    // Clear the URL error when the user modifies the URL
+
     if (key === "originalUrl") {
       setUrlError(null);
     }
@@ -97,6 +99,7 @@ const Createnew: React.FC<UrlFormProps> = () => {
         duration: 5000, 
         isClosable: true,
       });
+      navigate(`/dashboard/links/${res.url._id}`)
     } catch (error) {
       toast.closeAll();
 

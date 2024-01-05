@@ -76,7 +76,7 @@ class UrlController {
 
     try {
       await url.save();
-      res.status(200).json({ isError: false, shortUrl });
+      res.status(200).json({ isError: false, url });
     } catch (error) {
       console.error("Error shortening URL:", error);
       res.status(500).json({ error: "Internal Server Error" });

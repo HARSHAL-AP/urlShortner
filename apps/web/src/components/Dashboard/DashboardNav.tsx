@@ -38,6 +38,7 @@ const DashboardNav = () => {
   const [loading,setloading]=useState(false)
   const user: any = useSelector((state: RootState) => state.auth.user);
   const authtoken=useSelector((state: RootState) => state.auth.authToken)
+
   const accesToken: any = useSelector((state: RootState) => state.auth.accessToken);
   const handleSidebarToggle = () => {
     setismobail(!ismobail)
@@ -68,7 +69,12 @@ const handleLogout=async()=>{
       navigate("/")
     }
   } catch (error) {
-    console.log(error)
+    toast({
+      title: 'Error While loging out...!',
+      status: 'error',
+      duration: 5000, 
+      isClosable: true,
+    });
   }
 }
  

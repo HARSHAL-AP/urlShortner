@@ -64,7 +64,7 @@ const LinkCard: React.FC<LinkCardProps> = ({ link }) => {
   const navigate=useNavigate()
   const handleCopy = () => {
     
-    navigator.clipboard.writeText(link.shortUrl);
+    navigator.clipboard.writeText(`${process.env.REACT_APP_APILINK}/url/${link.shortUrl}`);
     toast({
       title: `Url copied to clipboard..`,
       position: "bottom-right",

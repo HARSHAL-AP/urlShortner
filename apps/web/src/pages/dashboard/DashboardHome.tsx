@@ -19,7 +19,7 @@ const DashboardHome: FC = () => {
       try {
         const response= await getData(`/url/getweaklystats?accessToken=${accestoken}`);
         setdata(response)
-        console.log(data)
+      
       } catch (error) {
         alert("Internal Server Error");
       }

@@ -1,22 +1,29 @@
-import React from "react";
-import { Button, Flex, Spacer, Box, Heading } from "@chakra-ui/react";
+import React, { useState } from "react";
+import { Button, Flex, Spacer, Box, Heading , Spinner} from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../redux/authSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/store";
+import Login from "../../pages/Login/Login";
+import Signup from "../../pages/Signup/Signup";
 
 interface NavbarProps {
-  //navbar
+  loginfun:()=>void;
+  signupfun:()=>void;
+  loading:boolean;
 }
 
-const Navbar: React.FC<NavbarProps> = () => {
+const Navbar: React.FC<NavbarProps> = ({loginfun,signupfun,loading}) => {
+ 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+ 
+ 
   const isAuth: any = useSelector(
     (state: RootState) => state.auth.isAuthenticated
   );
   
+
   return (
     <Flex
       as="nav"
@@ -32,21 +39,22 @@ const Navbar: React.FC<NavbarProps> = () => {
         <Heading color="blue.900">Swiftlinks</Heading>
       </Box>
       <Flex w="50%" display={{base:"none",md:"block"}}></Flex>
-      {!isAuth && (
+     {loading?<Spinner/>:<>{!isAuth && (
         <Flex align="center" justify="center">
           <Button
             variant="outline"
             
             colorScheme="voilet"
             mr={2}
-            onClick={() => navigate("/login")}
+         
+           onClick={loginfun}
           >
             Login
           </Button>
           <Button
             colorScheme="voilet"
             variant="outline"
-            onClick={() => navigate("/signup")}
+            onClick={signupfun}
           >
             Signup
           </Button>
@@ -62,7 +70,9 @@ const Navbar: React.FC<NavbarProps> = () => {
             Dashboard
           </Button>
         </Flex>
-      )}
+      )}</> 
+}
+     
     </Flex>
   );
 };
