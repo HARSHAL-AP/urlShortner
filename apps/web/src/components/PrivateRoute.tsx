@@ -37,7 +37,7 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
     return <div>Loading...</div>;
   }
 
-  return isAuth ? <>{children}</> : <Navigate to="/login" />;
+  return isAuth ? <>{children}</> : <Navigate to="/" />;
  
 };
 

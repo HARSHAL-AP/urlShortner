@@ -403,24 +403,24 @@ class UrlController {
 
   async getAllStats(req: Request, res: Response): Promise<void> {
     const { accessToken, selectedDate, tags } = req.query;
-
+  
     try {
       const currentDate = new Date();
       const statsForLastSevenDays = [];
-
+  
       for (let i = 0; i < 7; i++) {
         const currentDateStart = new Date(currentDate);
         currentDateStart.setDate(currentDate.getDate() - i);
         currentDateStart.setHours(0, 0, 0, 0);
-
+  
         const currentDateEnd = new Date(currentDateStart);
         currentDateEnd.setHours(23, 59, 59, 999);
-
+  
         const query: any = {
           createdAt: { $gte: currentDateStart, $lte: currentDateEnd },
           accessToken,
         };
-
+  
         if (selectedDate) {
           const selectedDateParam = selectedDate as string;
           const parsedDate = new Date(selectedDateParam);
@@ -428,14 +428,14 @@ class UrlController {
             query.createdAt = { $gte: parsedDate, $lt: parsedDate };
           }
         }
-
+  
         if (tags) {
           const tagsArray = Array.isArray(tags) ? tags : [tags];
           query.tags = { $in: tagsArray };
         }
-
+  
         const newUrls = await Url.find(query);
-
+  
         const totalClicksForCurrentDay = await Url.aggregate([
           {
             $match: {
@@ -443,6 +443,7 @@ class UrlController {
                 $gte: currentDateStart,
                 $lte: currentDateEnd,
               },
+              accessToken, // Include accessToken condition
             },
           },
           {
@@ -453,16 +454,16 @@ class UrlController {
             },
           },
         ]);
-
+  
         const expiringUrls = await Url.find({
           expiryDate: { $gte: currentDateStart, $lte: currentDateEnd },
           accessToken,
         });
-
+  
         const dayName = currentDateStart.toLocaleDateString("en-US", {
           weekday: "short",
         });
-
+  
         statsForLastSevenDays.push({
           date: currentDateStart.toISOString().split("T")[0],
           dayName,
@@ -474,8 +475,13 @@ class UrlController {
           expiringUrls,
         });
       }
-
+  
       const totalClicks = await Url.aggregate([
+        {
+          $match: {
+            accessToken, // Include accessToken condition
+          },
+        },
         {
           $group: {
             _id: null,
@@ -483,25 +489,30 @@ class UrlController {
           },
         },
       ]);
-
+  
       const mostTrendingLinks = await Url.aggregate([
+        { $match: { accessToken } }, // Include accessToken condition
         { $sort: { accessCount: -1 } },
         { $limit: 5 },
       ]);
-
+  
       const expiringSoonUrls = await Url.find({
         expiryDate: { $gte: currentDate },
         accessToken,
       });
-
+  
       var clicksByDevices = await Url.aggregate([
+        {
+          $match: {
+            accessToken, // Include accessToken condition
+          },
+        },
         {
           $unwind: "$accessLogs",
         },
         {
           $group: {
             _id: "$accessLogs.device.type",
-
             totalClicks: { $sum: 1 },
           },
         },
@@ -513,6 +524,11 @@ class UrlController {
       }));
       const clicksByLocation = await Url.aggregate([
         {
+          $match: {
+            accessToken, // Include accessToken condition
+          },
+        },
+        {
           $unwind: "$accessLogs",
         },
         {
@@ -522,7 +538,7 @@ class UrlController {
           },
         },
       ]);
-
+  
       res.status(200).json({
         statsForLastSevenDays,
         totalClicks: totalClicks.length > 0 ? totalClicks[0].totalClicks : 0,
@@ -536,6 +552,7 @@ class UrlController {
       res.status(500).json({ error: "Internal Server Error" });
     }
   }
+  
 }
 
 export default UrlController;
@@ -563,14 +580,13 @@ const calculateFrequency = (accessLogs: any) => {
     const { location, device } = accessLog;
     const deviceType = device.type;
 
-    // Increment frequency for locations
     locationMap[location] = (locationMap[location] || 0) + 1;
 
-    // Increment frequency for devices
+
     deviceMap[deviceType] = (deviceMap[deviceType] || 0) + 1;
   }
 
-  // Convert maps to arrays of objects
+ 
   const locations = Object.keys(locationMap).map((name) => ({
     name,
     frequency: locationMap[name],

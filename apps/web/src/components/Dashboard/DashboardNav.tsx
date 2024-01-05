@@ -15,7 +15,7 @@ import {
   Heading,
   useBreakpointValue,
   Box,
-  Spacer,VStack,Divider,Button,InputRightElement
+  Spacer,VStack,Divider,Button,InputRightElement,useToast
 } from "@chakra-ui/react";
 import { SearchIcon, MoonIcon, SunIcon, HamburgerIcon } from "@chakra-ui/icons";
 import Sidebar from "./Sidebar";
@@ -28,6 +28,7 @@ import { FaHome, FaLink, FaChartBar, FaCog, FaPlus } from 'react-icons/fa';
 import { FaUser } from "react-icons/fa6";
 import { getUrl } from "../../redux/urlSlice";
 import { getData } from "../../services/api";
+import {userLogout} from "../../services/api"
 
 const DashboardNav = () => {
   const [ismobail,setismobail]=useState(false)
@@ -36,11 +37,12 @@ const DashboardNav = () => {
   const dispatch = useDispatch();
   const [loading,setloading]=useState(false)
   const user: any = useSelector((state: RootState) => state.auth.user);
+  const authtoken=useSelector((state: RootState) => state.auth.authToken)
   const accesToken: any = useSelector((state: RootState) => state.auth.accessToken);
   const handleSidebarToggle = () => {
     setismobail(!ismobail)
   };
-  
+  const toast = useToast()
   const handleSubmit=async()=>{
  
    try {
@@ -52,7 +54,23 @@ const DashboardNav = () => {
    }
    
 }
-
+const handleLogout=async()=>{
+  try {
+    const responce =await userLogout(`/user/logout?token=${authtoken}`)
+    if(responce.isError===false){
+      dispatch(logout())
+      toast({
+        title: 'User Logout Success...!',
+        status: 'success',
+        duration: 5000, 
+        isClosable: true,
+      });
+      navigate("/")
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
  
 
 
@@ -97,7 +115,7 @@ const DashboardNav = () => {
                 <Text fontWeight="bold">{user.userName}</Text>
               </MenuItem>
               <MenuItem>Profile</MenuItem>
-              <MenuItem onClick={()=>dispatch(logout())}>Logout</MenuItem>
+              <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </MenuList>
           </Menu>
         </Flex>
