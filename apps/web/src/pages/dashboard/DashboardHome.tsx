@@ -45,15 +45,15 @@ const DashboardHome: FC = () => {
         p="30px"
         borderRadius="5px"
         mb={8}
-        borderWidth="1px"
-        bg="white"
+      
+        bg="blue.800"
       >
         {/* Heading with dynamic username */}
-        <Heading as="h3" size="xl" mb={4}>
+        <Heading as="h3" size="xl" mb={4} color="white">
           Welcome, 🖐️!
         </Heading>
 
-        <Text fontSize="md">Track your links with every detail here.</Text>
+        <Text fontSize="md" color="white">Track your links with every detail here.</Text>
       </Box>
 
       {/* Grid of 3 boxes */}
