@@ -27,7 +27,7 @@ const urlSchema = new Schema(
         device: {
           type: {
             type: String,
-            enum: ['mobile', 'tablet', 'desktop', 'unknown'],
+            enum: ['mobile', 'tablet', 'desktop', 'unknown'],  
             default: 'unknown',
           },
           browser: { type: String },
