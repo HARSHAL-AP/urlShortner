@@ -23,6 +23,7 @@ import { getData } from "../../services/api";
 import { getUrl } from "../../redux/urlSlice";
 import { useLocation } from "react-router-dom";
 import NoData from "../../components/NoData";
+import Sortingoptions from "../../components/Dashboard/Sortingoptions";
 
 interface ShortenedLink {
   longUrl: string;
@@ -73,7 +74,11 @@ const Links = () => {
       <Heading as="h3" size="md" textAlign="left" mt="30px" ml="20px">
         Links
       </Heading>
+      <Flex  gap="10px" mt="5" >
       <Filters />
+      <Sortingoptions/>
+      </Flex>
+      
 
       <Box mt="30px" w="100%" pl="20px">
         

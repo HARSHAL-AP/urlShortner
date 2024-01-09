@@ -143,11 +143,11 @@ const Filters = () => {
     onDrawerClose();
   };
 
-  // Conditionally show or hide the "Clear Filters" button based on whether filters are added
+  
   const isClearFiltersVisible = location.search.includes("tag");
 
   return (
-    <Flex justify="left" mt="5" gap="10px" ml="20px">
+    <Flex  justify="left" gap="10px" ml="20px" >
       <Button variant="outline" gap="5px" bg="white" onClick={onModalOpen}>
         <FaRegCalendarAlt /> Select Date
       </Button>
