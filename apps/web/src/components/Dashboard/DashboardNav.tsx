@@ -22,7 +22,7 @@ import Sidebar from "./Sidebar";
 import { logout } from "../../redux/authSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/store";
-import { useNavigate } from "react-router-dom";
+import { useNavigate ,useLocation} from "react-router-dom";
 import { Link as RouterLink } from 'react-router-dom';
 import { FaHome, FaLink, FaChartBar, FaCog, FaPlus } from 'react-icons/fa'; 
 import { FaUser } from "react-icons/fa6";
@@ -34,6 +34,7 @@ const DashboardNav = () => {
   const [ismobail,setismobail]=useState(false)
   const [text,settext]=useState("")
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
   const [loading,setloading]=useState(false)
   const user: any = useSelector((state: RootState) => state.auth.user);
@@ -45,15 +46,11 @@ const DashboardNav = () => {
   };
   const toast = useToast()
   const handleSubmit=async()=>{
- 
-   try {
-    const responce=await getData(`/url/search/${text}?accessToken=${accesToken}`)
-     dispatch(getUrl(responce.data))
-     navigate("/dashboard/links")
-   } catch (error) {
-    console.log(error)
-   }
    
+   
+   
+    navigate(`/dashboard/links?search=${text}`)
+  
 }
 const handleLogout=async()=>{
   try {
