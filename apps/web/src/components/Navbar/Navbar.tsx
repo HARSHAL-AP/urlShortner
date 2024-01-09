@@ -8,9 +8,9 @@ import Login from "../../pages/Login/Login";
 import Signup from "../../pages/Signup/Signup";
 
 interface NavbarProps {
-  loginfun:()=>void;
-  signupfun:()=>void;
-  loading:boolean;
+  loginfun?:()=>void;
+  signupfun?:()=>void;
+  loading?:boolean;
 }
 
 const Navbar: React.FC<NavbarProps> = ({loginfun,signupfun,loading}) => {
