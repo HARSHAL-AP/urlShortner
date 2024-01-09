@@ -90,13 +90,9 @@ class UrlController {
 
       if (url) {
         if (url.expiryDate && url.expiryDate < new Date()) {
-          // Read the HTML template content
-          const htmlContent = readFileSync(
-            join("../services", "expirePage.html"),
-            "utf-8"
-          );
-
-          // Set the HTML content as the response
+         
+          const htmlContent = readFileSync('./xpage.html', 'utf-8');
+          
           res.status(403).send(htmlContent);
         } else {
           const accesinfo: any = {
@@ -265,24 +261,47 @@ class UrlController {
   // For Getting all urls by accestoken
   async getallUrlsByaccessToken(req: Request, res: Response): Promise<void> {
     const { accessToken } = req.body;
-    const { tags, selectedDate } = req.query;
+  const { tags, startDate, endDate, search } = req.query;
 
-    try {
-      let query: any = { accessToken };
+  try {
+    let query: any = { accessToken };
 
-      if (tags && typeof tags === "string") {
-        query.tags = { $in: tags.split(",") };
-      }
-
-      if (selectedDate && typeof selectedDate === "string") {
-        query.createdDate = selectedDate;
-      }
-
-      const data = await Url.find(query);
-      res.status(200).json({ isError: false, data });
-    } catch (error) {
-      res.status(500).json({ error: "Internal Server Error" });
+    if (tags && typeof tags === "string") {
+      query.tags = { $in: tags.split(",") };
     }
+    if (startDate && typeof startDate === "string") {
+      const parsedStartDate = new Date(`${startDate}T00:00:00.000Z`);
+      query.createdAt= { $gte: parsedStartDate };
+    }
+
+    if (endDate && typeof endDate === "string") {
+      const parsedEndDate = new Date(`${endDate}T23:59:59.999Z`);
+      if (query.createdAt) {
+       
+        query.createdAt.$lte = parsedEndDate;
+      } else {
+        
+        query.createdAt= { $lte: parsedEndDate };
+      }
+    }
+    if (search && typeof search === "string") {
+     
+      query.$or =[
+        { shortUrl: { $regex: '\\b' + search, $options: 'i' } },
+        { title: { $regex: '\\b' + search, $options: 'i' } },
+        { tags: { $in: [search] } },
+      ];
+    }
+ 
+
+
+
+    const data = await Url.find(query);
+    res.status(200).json({ isError: false, data });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
   }
 
   //For geting statistic fo rtodyas data
@@ -402,11 +421,32 @@ class UrlController {
   }
 
   async getAllStats(req: Request, res: Response): Promise<void> {
-    const { accessToken, selectedDate, tags } = req.query;
-  
+    const { tags, startDate, endDate, search, accessToken } = req.query;
+
     try {
-      const currentDate = new Date();
+      let query: any = { accessToken };
+  
+      if (tags) {
+        const tagsArray = Array.isArray(tags) ? tags : [tags];
+        query.tags = { $in: tagsArray };
+      }
+  
+      if (startDate && typeof startDate === "string") {
+        const parsedStartDate = new Date(`${startDate}T00:00:00.000Z`);
+        query.createdAt = { $gte: parsedStartDate };
+      }
+  
+      if (endDate && typeof endDate === "string") {
+        const parsedEndDate = new Date(`${endDate}T23:59:59.999Z`);
+        if (query.createdAt) {
+          query.createdAt.$lte = parsedEndDate;
+        } else {
+          query.createdAt = { $lte: parsedEndDate };
+        }
+      }
+  
       const statsForLastSevenDays = [];
+      const currentDate = new Date();
   
       for (let i = 0; i < 7; i++) {
         const currentDateStart = new Date(currentDate);
@@ -416,25 +456,9 @@ class UrlController {
         const currentDateEnd = new Date(currentDateStart);
         currentDateEnd.setHours(23, 59, 59, 999);
   
-        const query: any = {
-          createdAt: { $gte: currentDateStart, $lte: currentDateEnd },
-          accessToken,
-        };
+        const dailyQuery = { ...query, createdAt: { $gte: currentDateStart, $lte: currentDateEnd } };
   
-        if (selectedDate) {
-          const selectedDateParam = selectedDate as string;
-          const parsedDate = new Date(selectedDateParam);
-          if (!isNaN(parsedDate.getTime())) {
-            query.createdAt = { $gte: parsedDate, $lt: parsedDate };
-          }
-        }
-  
-        if (tags) {
-          const tagsArray = Array.isArray(tags) ? tags : [tags];
-          query.tags = { $in: tagsArray };
-        }
-  
-        const newUrls = await Url.find(query);
+        const newUrls = await Url.find(dailyQuery);
   
         const totalClicksForCurrentDay = await Url.aggregate([
           {
@@ -443,7 +467,7 @@ class UrlController {
                 $gte: currentDateStart,
                 $lte: currentDateEnd,
               },
-              accessToken, // Include accessToken condition
+              accessToken,
             },
           },
           {
@@ -478,9 +502,7 @@ class UrlController {
   
       const totalClicks = await Url.aggregate([
         {
-          $match: {
-            accessToken, // Include accessToken condition
-          },
+          $match: query,
         },
         {
           $group: {
@@ -491,7 +513,7 @@ class UrlController {
       ]);
   
       const mostTrendingLinks = await Url.aggregate([
-        { $match: { accessToken } }, // Include accessToken condition
+        { $match: query },
         { $sort: { accessCount: -1 } },
         { $limit: 5 },
       ]);
@@ -503,9 +525,7 @@ class UrlController {
   
       var clicksByDevices = await Url.aggregate([
         {
-          $match: {
-            accessToken, // Include accessToken condition
-          },
+          $match: query,
         },
         {
           $unwind: "$accessLogs",
@@ -522,11 +542,10 @@ class UrlController {
         totalClicks: device.totalClicks,
         fill: getColorForDevice(device._id),
       }));
+  
       const clicksByLocation = await Url.aggregate([
         {
-          $match: {
-            accessToken, // Include accessToken condition
-          },
+          $match: query,
         },
         {
           $unwind: "$accessLogs",

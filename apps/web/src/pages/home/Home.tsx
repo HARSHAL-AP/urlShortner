@@ -1,4 +1,5 @@
 import React, { useState,ReactNode, useEffect } from "react";
+import style from "./Home.module.css"
 import Navbar from '../../components/Navbar/Navbar'
 import Hero from '../../components/Hero/Hero'
 import Accordian from '../../components/Hero/Accordian'
@@ -27,9 +28,10 @@ const Home = () => {
   const isAuth: boolean = useSelector(
     (state: RootState) => state.auth.isAuthenticated
   );
-  const [loading, setLoading] = React.useState(true);
+  const [loading, setLoading] = React.useState(false);
   useEffect(() => {
     const checkAuthentication = async () => {
+      setLoading(true);
       try {
         const response= await getData(`/user/check-auth`);
         dispatch(checkAuth(response));
@@ -39,9 +41,13 @@ const Home = () => {
         setLoading(false);
       }
     };
-
-    checkAuthentication();
-  }, [dispatch]);
+    
+      if(isAuth){
+        checkAuthentication();
+    
+      }
+     
+  }, [isAuth]);
   const openDrawer = (content: React.ReactNode, onCloseCallback?: () => void) => {
     setDrawerContent(content);
     onOpen();
@@ -62,7 +68,7 @@ const Home = () => {
 
 
   return (
-    <Box bg="white">
+    <div className={style.home}>
     <Navbar loginfun={openLoginDrawer} signupfun={openSignupDrawer} loading={loading}/>
     <Hero signufun={openSignupDrawer}/>
     <Hero2/>
@@ -77,7 +83,7 @@ const Home = () => {
           </DrawerBody>
         </DrawerContent>
       </Drawer>
-    </Box>
+    </div>
   )
 }
 

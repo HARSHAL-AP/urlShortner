@@ -11,11 +11,13 @@ import PrivateRoute from "../components/PrivateRoute";
 import Analytics from "../pages/dashboard/Analytics";
 import Apiintegration from "../pages/dashboard/Apiintegration";
 import Url from "../pages/dashboard/Url";
+import ApiDocumentation from "../pages/Apidocumentation/ApiDocumentation";
 
 const Allroutes = () => {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/apidocs" element={<ApiDocumentation />} />
       
     
 
