@@ -1,7 +1,7 @@
 import express, { Router } from "express";
 import UrlController from "../controller/url.controller";
 import {verifyTokenMiddleware,verifyUserAccestoken} from "../middleware/Userauthonticate"
-
+import verifyDevice from "../middleware/GetDeviseinfo";
 
 
 class UrlRouter {
@@ -11,6 +11,7 @@ class UrlRouter {
   public urlController = new UrlController();
   constructor() {
     this.initializeRoutes();
+    this.router.use(verifyDevice)
   }
   private initializeRoutes() {
     

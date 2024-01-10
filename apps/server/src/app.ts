@@ -58,6 +58,7 @@ class App {
     this.app.get("/", (req, res) => {
       res.send("Server Running Fine");
     });
+    
    this.app.use(
      session({
        secret: env.SESSION_SECRET,

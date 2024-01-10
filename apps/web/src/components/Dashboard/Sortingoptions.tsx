@@ -1,36 +1,34 @@
 import React, { useState, useEffect } from "react";
 import { Flex, Select } from "@chakra-ui/react";
 import { FaLongArrowAltUp } from "react-icons/fa";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 type Props = {};
 
 const SortingOptions = (props: Props) => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-
+  const navigate = useNavigate();
   const [selectedSort, setSelectedSort] = useState(
     queryParams.get("sort") || ""
   );
 
-  useEffect(() => {
-    const updateQueryParams = () => {
-      const newParams = new URLSearchParams(location.search);
-
-      newParams.delete("sort");
-
-      if (selectedSort) {
-        newParams.set("sort", selectedSort);
-      }
-
-      window.history.replaceState(null, "", `?${newParams.toString()}`);
-    };
-
-    updateQueryParams();
-  }, [location, selectedSort]);
-
   const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedSort(event.target.value);
+    const newSortValue = event.target.value;
+
+    setSelectedSort(newSortValue);
+
+    // Update URL query parameter
+    if (newSortValue !== "") {
+      queryParams.set("sort", newSortValue);
+    } else {
+      queryParams.delete("sort");
+    }
+
+    // Update the URL with the new query parameters
+    navigate(`${location.pathname}?${queryParams.toString()}`, {
+      replace: true,
+    });
   };
 
   return (
@@ -43,6 +41,8 @@ const SortingOptions = (props: Props) => {
       >
         <option value="created_date">Created Date</option>
         <option value="expiry_date">Expiry Date</option>
+        <option value="title_asc">Title A to Z</option>
+        <option value="title_desc">Title Z to A</option>
         <option value="total_clicks_high">Click High to Low</option>
         <option value="total_clicks_low">Click Low to High</option>
       </Select>

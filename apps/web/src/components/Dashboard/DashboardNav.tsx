@@ -117,7 +117,7 @@ const handleLogout=async()=>{
               <MenuItem>
                 <Text fontWeight="bold">{user.userName}</Text>
               </MenuItem>
-              <MenuItem>Profile</MenuItem>
+              <MenuItem onClick={()=>navigate("/dashboard/profile")}>Profile</MenuItem>
               <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </MenuList>
           </Menu>

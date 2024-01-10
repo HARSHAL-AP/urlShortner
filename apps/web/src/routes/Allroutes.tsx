@@ -12,6 +12,7 @@ import Analytics from "../pages/dashboard/Analytics";
 import Apiintegration from "../pages/dashboard/Apiintegration";
 import Url from "../pages/dashboard/Url";
 import ApiDocumentation from "../pages/Apidocumentation/ApiDocumentation";
+import Profile from "../pages/dashboard/Profile";
 
 const Allroutes = () => {
   return (
@@ -29,6 +30,7 @@ const Allroutes = () => {
         <Route path="links/:id" element={<PrivateRoute><Url /></PrivateRoute>} />
         <Route path="analytics" element={<PrivateRoute><Analytics /></PrivateRoute>} />
         <Route path="api" element={<PrivateRoute><Apiintegration /></PrivateRoute>} />
+        <Route path="profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
       </Route>
     </Routes>
   );

@@ -21,22 +21,7 @@ const urlSchema = new Schema(
     title: { type: String },
     accessCount: { type: Number, default: 0 },
     accessLogs: [
-      {
-        ipAddress: { type: String },
-        location: { type: String },
-        device: {
-          type: {
-            type: String,
-            enum: ['mobile', 'tablet', 'desktop', 'unknown'],  
-            default: 'unknown',
-          },
-          browser: { type: String },
-          version: { type: String },
-          os: { type: String },
-          platform: { type: String },
-        },
-        timestamp: { type: Date, default: Date.now },
-      },
+     
     ],
     tags: [{ type: String }],
     expiryDate: { type: Date, default: null },

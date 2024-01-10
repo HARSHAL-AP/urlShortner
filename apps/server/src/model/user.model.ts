@@ -4,8 +4,25 @@ import crypto from "crypto";
 
 interface UserLoginLog {
   ipAddress: string;
-  location: string;
-  timestamp: string;
+  timestamp: any;
+  device: {
+    type: string;
+    browser: string;
+    version: string;
+    os: string;
+    platform: string;
+  };
+  location: {
+    ip: string;
+    city: string;
+    region: string;
+    country: string;
+    loc: string;
+    org: string;
+    postal: string;
+    timezone: string;
+  };
+  isActive: boolean;
 }
 
 interface UserModel extends Document, IUserModel {
@@ -20,11 +37,43 @@ const UserSchema: Schema<UserModel> = new Schema(
     organizationName: { type: String },
     customDomain: { type: String },
     createbyIp: { type: String, required: true },
+    createdBydevice: {
+      type: {
+        type: String,
+        enum: ["mobile", "tablet", "desktop", "unknown"],
+        default: "unknown",
+      },
+      browser: { type: String },
+      version: { type: String },
+      os: { type: String },
+      platform: { type: String },
+    },
     loginLogs: [
       {
         ipAddress: { type: String, required: true },
-        location: { type: String, required: true },
-        timestamp: { type: String, required: true },
+        location: {
+          ip: { type: String },
+          city: { type: String },
+          region: { type: String },
+          country: { type: String },
+          loc: { type: String },
+          org: { type: String },
+          postal: { type: String },
+          timezone: { type: String },
+        },
+        device: {
+          type: {
+            type: String,
+            enum: ["mobile", "tablet", "desktop", "unknown"],
+            default: "unknown",
+          },
+          browser: { type: String },
+          version: { type: String },
+          os: { type: String },
+          platform: { type: String },
+        },
+        timestamp: { type: Date, default: Date.now },
+        isActive:{type:Boolean}
       },
     ],
     accessToken: { type: String, require: true, unique: true },

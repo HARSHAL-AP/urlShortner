@@ -261,7 +261,7 @@ class UrlController {
   // For Getting all urls by accestoken
   async getallUrlsByaccessToken(req: Request, res: Response): Promise<void> {
     const { accessToken } = req.body;
-  const { tags, startDate, endDate, search } = req.query;
+  const { tags, startDate, endDate, search,sort } = req.query;
 
   try {
     let query: any = { accessToken };
@@ -292,11 +292,34 @@ class UrlController {
         { tags: { $in: [search] } },
       ];
     }
- 
+    
+    const sortOptions: { [key: string]: number } = {};
+    if (sort && typeof sort === "string") {
+      switch (sort) {
+        case "created_date":
+          sortOptions.createdAt = -1; // Sort by latest createdAt
+          break;
+        case "expiry_date":
+          sortOptions.expiryDate = -1; // Sort by latest expiryDate
+          break;
+        case "total_clicks_high":
+          sortOptions.accessCount = -1; // Sort by total clicks high to low
+          break;
+        case "total_clicks_low":
+          sortOptions.accessCount = 1; // Sort by total clicks low to high
+          break;
+        case "title_asc":
+          sortOptions.title = 1; // Sort titles in ascending order
+          break;
+        case "title_desc":
+          sortOptions.title = -1; // Sort titles in descending order
+          break;
+       
+      }
+    }
 
 
-
-    const data = await Url.find(query);
+    const data = await Url.find(query).sort(sortOptions as any);
     res.status(200).json({ isError: false, data });
   } catch (error) {
     console.error(error);
