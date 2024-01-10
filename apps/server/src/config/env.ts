@@ -13,7 +13,8 @@ const validateEnv = () => {
     SESSION_SECRET: str(),
     AUTH_COOKIE_NAME: str(),
     CORS_ORIGINS: str(),
-    KEY:str()
+    KEY:str(),
+    IP_INFO_TOKEN:str()
   });
 
   return cleanedEnv;

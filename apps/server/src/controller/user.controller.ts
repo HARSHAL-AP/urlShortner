@@ -1,16 +1,12 @@
 import { Request, Response } from "express";
-import jwt,{ TokenExpiredError} from "jsonwebtoken";
+import jwt, { TokenExpiredError } from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import User from "../model/user.model";
 import { UserModel } from "../interface/user.interface";
 import { getLocation } from "../services/assess";
 import env from "../config/env";
-import crypto from "crypto";
 
 const key = env.KEY;
-
-
-
 
 class UserController {
   async getAll(req: Request, res: Response): Promise<void> {
@@ -27,10 +23,25 @@ class UserController {
       });
     }
   }
-
+  async getUserdata(req: Request, res: Response): Promise<void> {
+    const {userid}=req.body
+    try {
+      const data= await User.findById({_id:userid});
+      
+      res.status(200).json({
+        isError: false,
+        data
+      });
+    } catch (error) {
+      res.status(500).json({
+        isError: true,
+        error,
+      });
+    }
+  }
   async register(req: Request, res: Response): Promise<void> {
     try {
-      const { userName, email, password } = req.body;
+      const { userName, email, password, locationInfo, deviceInfo } = req.body;
 
       const existingUser = await User.findOne({ email });
 
@@ -50,6 +61,7 @@ class UserController {
         createbyIp: req.ip,
         isActive: true,
         registrationDate: new Date(),
+        createdBydevice: deviceInfo,
       });
 
       await newUser.save();
@@ -69,19 +81,13 @@ class UserController {
 
       const loginIp = {
         ipAddress: req.ip ?? "Unknown",
-        location: "Unknown",
-        timestamp: new Date().toISOString(),
+        location: locationInfo,
+        device: deviceInfo,
+        isActive: true,
       };
 
-      try {
-        const locationInfo = await getLocation(req.ip);
-        loginIp.location =
-          locationInfo.city || locationInfo.region || "Unknown";
-      } catch (error) {
-        console.error("Error fetching location:", error);
-      }
-
       user.loginLogs.push(loginIp);
+
       user.lastLogin = new Date();
       await user.save();
       res.cookie("authtoken", token, {
@@ -91,7 +97,7 @@ class UserController {
       });
       res.status(201).json({
         isError: false,
-        authToken:token,
+        authToken: token,
         accessToken: user.accessToken,
         message: "User registered successfully",
       });
@@ -107,7 +113,7 @@ class UserController {
 
   async login(req: Request, res: Response): Promise<void> {
     try {
-      const { email, password } = req.body;
+      const { email, password, locationInfo, deviceInfo } = req.body;
 
       const user = await User.findOne({ email });
 
@@ -137,17 +143,11 @@ class UserController {
 
       const loginIp = {
         ipAddress: req.ip ?? "Unknown",
-        location: "Unknown",
-        timestamp: new Date().toISOString(),
+        location: locationInfo,
+        device: deviceInfo,
+        isActive: true,
+        timestamp: Date.now(),
       };
-
-      try {
-        const locationInfo = await getLocation(req.ip);
-        loginIp.location =
-          locationInfo.city || locationInfo.region || "Unknown";
-      } catch (error) {
-        console.error("Error fetching location:", error);
-      }
 
       user.loginLogs.push(loginIp);
       user.lastLogin = new Date();
@@ -160,11 +160,12 @@ class UserController {
       res.status(200).json({
         isError: false,
         accessToken: user.accessToken,
-        authToken:token,
+        authToken: token,
         user: {
           userName: user.userName,
           email: user.email,
-        }})
+        },
+      });
     } catch (error) {
       console.error("Error during login:", error);
       res.status(500).json({
@@ -176,7 +177,7 @@ class UserController {
   async getAuthonticated(req: Request, res: Response): Promise<void> {
     try {
       const authToken = req.cookies.authtoken;
-      
+
       if (authToken) {
         const decoded = jwt.verify(authToken, env.KEY) as { userId: string };
         const user = await User.findById(decoded.userId);
@@ -215,14 +216,11 @@ class UserController {
     }
   }
 
-
-
-
-
   async logout(req: Request, res: Response): Promise<void> {
     try {
       const { token } = req.query;
-  
+      const { locationInfo, deviceInfo } = req.body;
+      const ip = req.ip;
       if (!token) {
         res.status(400).json({
           isError: true,
@@ -230,22 +228,31 @@ class UserController {
         });
         return;
       }
-  
+
       res.clearCookie("authtoken", {
         httpOnly: false,
         secure: false,
         sameSite: "lax",
       });
-  
+
       try {
-        const decodedToken = jwt.verify(token as string, key || "") as { userId: string };
-  
+        const decodedToken = jwt.verify(token as string, key || "") as {
+          userId: string;
+        };
+
         const user = await User.findById(decodedToken.userId);
-  
+
         if (user) {
+          const loginLogToUpdate = user.loginLogs.find(
+            (log) => log.ipAddress === ip
+          );
+
+          if (loginLogToUpdate) {
+            loginLogToUpdate.isActive = false;
+          }
           user.isActive = false;
           await user.save();
-  
+
           res.status(200).json({
             isError: false,
             message: "Logout successful",
@@ -281,16 +288,12 @@ class UserController {
   async updateUser(req: Request, res: Response): Promise<void> {
     try {
       const { userId } = req.params;
-      const { userName, email, password } = req.body;
-
-      const hashedPassword = await bcrypt.hash(password, 10);
+      const { userName } = req.body;
 
       const updatedUser = await User.findByIdAndUpdate(
-        userId,
+        { _id: userId },
         {
           userName,
-          email,
-          password: hashedPassword,
         },
         { new: true }
       );
@@ -311,6 +314,50 @@ class UserController {
       res.status(500).json({
         isError: true,
         error,
+      });
+    }
+  }
+  async updatpassword(req: Request, res: Response): Promise<void> {
+    try {
+    
+      const { oldpassword, newpassword,userid } = req.body;
+  
+      
+      const user:any = await User.findById({_id:userid});
+  
+      if (!user) {
+         res.status(404).json({
+          isError: true,
+          message: "User not found",
+        });
+      }
+  
+     
+      const isPasswordMatch = await bcrypt.compare(oldpassword, user.password);
+  
+      if (!isPasswordMatch) {
+         res.status(401).json({
+          isError: true,
+          message: "Incorrect old password",
+        });
+      }
+  
+      
+      const hashedPassword = await bcrypt.hash(newpassword, 10);
+      user.password = hashedPassword;
+  
+      
+      const updatedUser = await user.save();
+  
+      res.status(200).json({
+        isError: false,
+        updatedUser,
+      });
+    } catch (error) {
+      console.error("Error updating password:", error);
+      res.status(500).json({
+        isError: true,
+        error: "Internal Server Error",
       });
     }
   }

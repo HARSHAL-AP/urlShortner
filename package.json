@@ -20,5 +20,8 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "node-ipinfo": "^3.5.1"
+  }
 }

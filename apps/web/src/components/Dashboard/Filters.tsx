@@ -94,8 +94,9 @@ const CustomDateFilter: React.FC<CustomDateFilterProps> = ({isOpen,onClose}) => 
   
     searchParams.delete('startDate');
     searchParams.delete('endDate');
-  
-   
+    searchParams.delete('sort');
+    searchParams.delete('search');
+    searchParams.delete('tags');
     navigate({ search: searchParams.toString() });
   
     
@@ -205,6 +206,12 @@ const Filters: React.FC = () => {
     setTags([]);
     const searchParams = new URLSearchParams(location.search);
     searchParams.delete("tags");
+    
+    searchParams.delete('startDate');
+    searchParams.delete('endDate');
+    searchParams.delete('sort');
+    searchParams.delete('search');
+  
     navigate({ search: searchParams.toString() });
     onDrawerClose();
   };
