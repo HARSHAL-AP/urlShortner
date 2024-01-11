@@ -31,8 +31,8 @@ class UrlRouter {
  
     this.router.get(`${this.path}/search/:searchTerm`, verifyTokenMiddleware, this.urlController.searchUrls);
     this.router.get(`${this.path}/:shortUrl`, this.urlController.redirectToOriginalUrl);
-    this.router.get(`${this.path}/get/:id`, verifyTokenMiddleware, this.urlController.geturldata);
-  
+    this.router.get(`${this.path}/get/:id`, verifyUserAccestoken, this.urlController.geturldata);
+    this.router.get(`${this.path}/geturl/:shortUrl`, verifyUserAccestoken, this.urlController.geturlwithshortid);
 
     //CRUD For Urls 
     this.router.post(`${this.path}/shortner`,verifyUserAccestoken, this.urlController.shortenUrl);

@@ -20,6 +20,7 @@ class Userrouter{
     this.router.get(`${this.path}/check-auth`,this.userController.getAuthonticated)
     this.router.get(`${this.path}/logout`,verifyTokenMiddleware,this.userController.logout);
     this.router.patch(`${this.path}/update/:userId`,verifyTokenMiddleware, this.userController.updateUser);
+    this.router.patch(`${this.path}/updateloginactivity`,verifyTokenMiddleware, this.userController.updateLoginactivity);
     this.router.patch(`${this.path}/updatepassword`,verifyTokenMiddleware, this.userController.updatpassword);
     this.router.put(`${this.path}/update/:userId`,verifyTokenMiddleware, this.userController.updateUser);
     this.router.delete(`${this.path}/delete/:userId`,verifyTokenMiddleware, this.userController.deleteUser);

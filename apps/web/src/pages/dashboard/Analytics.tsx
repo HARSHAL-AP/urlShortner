@@ -82,7 +82,7 @@ const Analytics = () => {
       <Heading as="h3" size="lg" textAlign="left" mt="20px" ml="30px">
         Analytics
       </Heading>
-      <Box>
+      <Box mt="5">
         <Filters />
       </Box>
       <Flex w="98%" ml="20px" mt="25px" gap="20px">

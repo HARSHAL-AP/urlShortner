@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Heading,Image ,Spinner} from "@chakra-ui/react";
+import { Box, Heading,Image ,Spinner,Skeleton} from "@chakra-ui/react";
 import {
   AreaChart,
   Area,
@@ -22,7 +22,7 @@ interface AnalysisCardProps {
 const AnalysisCard: React.FC<AnalysisCardProps> = ({ title, data }) => {
   data=data.reverse()
   if(data.length===0){
-    return <Box><Spinner color='blue.500' /></Box>
+    return <Skeleton startColor='gray.200' endColor='gray.200'></Skeleton>
   }
   return (
     <Box

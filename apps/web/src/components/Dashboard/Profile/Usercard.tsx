@@ -26,11 +26,13 @@ import ResetPassword from "./ResetPassword";
 
 interface UserCardProps {
   
-  email: string;
-  name: string;
-  organization?: string;
-  domain?: string;
-  accessToken: string;
+        accessToken:string;
+        createbyIp:string;
+        createdAt:string;
+        email:string;
+        userName:string;
+        loginLogs:any;
+        updatedAt:string;
 }
 
 
@@ -39,12 +41,13 @@ interface UserCardProps {
 
 
 const UserCard: React.FC<UserCardProps> = ({
-
-  email,
-  name,
-  organization,
-  domain,
   accessToken,
+  createbyIp,
+  createdAt,
+  email,
+  userName,
+  loginLogs,
+  updatedAt
 }) => {
   const { isOpen: isEditModalOpen, onOpen: onEditModalOpen, onClose: onEditModalClose } = useDisclosure();
   const { isOpen: isResetPasswordModalOpen, onOpen: onResetPasswordModalOpen, onClose: onResetPasswordModalClose } = useDisclosure();
@@ -62,13 +65,13 @@ const UserCard: React.FC<UserCardProps> = ({
         borderRadius="10px"
       >
         <Center w="100px" h="100px" borderRadius="50%" bg="blue.800">
-          <Heading color="white">{name[0]}</Heading>
+          <Heading color="white">{userName[0]}</Heading>
         </Center>
         <Box ml="15px">
           <Heading size="xl" textAlign="left">
-            {name}
+            {userName}
           </Heading>
-          <Box w="100%">{email}</Box>
+          <Box w="100%" textAlign="left">{email}</Box>
         </Box>
       </Flex>
       <Box  borderRadius="5px" p="4" mt="30px" mb="30px" bg="white" w="99%">
@@ -96,8 +99,8 @@ const UserCard: React.FC<UserCardProps> = ({
         borderRadius="10px"
       >
     
-        <Button onClick={onEditModalOpen}>Edit User</Button>
-        <Text ml="10px " textDecoration="underline" onClick={onResetPasswordModalOpen}>
+       {/* <Button onClick={onEditModalOpen}>Edit User</Button>*/}
+        <Text ml="10px " textDecoration="underline" onClick={onResetPasswordModalOpen} cursor="pointer">
           Reset Password
         </Text>
       </Flex>

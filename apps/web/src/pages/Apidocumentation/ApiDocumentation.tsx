@@ -17,11 +17,11 @@ const ApiDocumentation = (props: Props) => {
     </Flex>
     <Box w="100%"  border="1px solid red">
      <Flex w="100%"  border="1px solid red">
-         <Box w="20%"  h="100vh" display={{ base: 'none', md: 'block' }}  border="1px solid red">
+         <Box w="15%"  h="100vh" display={{ base: 'none', md: 'block' }}  border="1px solid red">
          <ApidocsSidebar/>
 
          </Box>
-         <Box w={{ base: '100%', md: '80%' }}  border="1px solid red">
+         <Box w={{ base: '100%', md: '100%' }}  border="1px solid red">
             
 
          </Box>

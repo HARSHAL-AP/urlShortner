@@ -185,6 +185,41 @@ class UrlController {
       res.status(500).json({ error: "Internal Server Error" });
     }
   }
+   
+  async geturlwithshortid(req: Request, res: Response): Promise<void> {
+    const { shortUrl } = req.params;
+    const { accessToken } = req.query;
+    try {
+      
+      const url :any= await Url.findById({shortUrl, accessToken });
+
+      if (!url) {
+        res.status(404).json({ error: "URL not found" });
+        return;
+      }
+      const data={
+        originalUrl:url.originalUrl,
+        shortUrl:url.shortUrl,
+        title:url.title,
+       
+        linkDescription:url.linkDescription,
+        accessCount:url.accessCount,
+       
+        tags:url.tags,
+        expiryDate: url.expiryDate,
+       }
+    
+      res.status(200).json({
+        isError:"false",
+        data
+        
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+
+  }
 
   //update url
   async updateUrl(req: Request, res: Response): Promise<void> {
