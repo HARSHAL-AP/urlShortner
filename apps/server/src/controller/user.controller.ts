@@ -26,11 +26,20 @@ class UserController {
   async getUserdata(req: Request, res: Response): Promise<void> {
     const {userid}=req.body
     try {
-      const data= await User.findById({_id:userid});
+      const data:any= await User.findById({_id:userid});
+      const user={accessToken:data.accessToken,
+        createbyIp:data.createbyIp,
+        createdAt:data.createdAt,
+        email:data.email,
+        userName:data.userName,
+        loginLogs:data.loginLogs.filter((e:any)=>e.isActive&&e.isActive===true),
+        updatedAt:data.updatedAt
+
       
+      }
       res.status(200).json({
         isError: false,
-        data
+       user
       });
     } catch (error) {
       res.status(500).json({
@@ -385,6 +394,39 @@ class UserController {
         isError: true,
         error,
       });
+    }
+  }
+  async updateLoginactivity(req:Request,res:Response):Promise<void>{
+    try {
+      const {userid,objectid}=req.body;
+       
+      if(!userid||!objectid){
+        res.status(400).json({ error: 'Invalid input parameters' }); 
+      }
+       
+      const user:any=await User.findById({_id:userid})
+
+      if(!user){
+        res.status(404).json({ error: 'User not found' });
+      }
+      const loginActivityIndex = user.loginLogs.findIndex(
+        (activity:any) => activity._id.toString() === objectid
+      );
+      if (loginActivityIndex === -1) {
+        res.status(404).json({ error: 'Login activity not found' });
+      }
+  
+     
+      user.loginLogs[loginActivityIndex].isActive = false;
+  
+      // Save the updated user
+      await user.save();
+
+      res.status(200).json({ message: 'Login activity updated successfully' });
+
+    } catch (error) {
+      console.error('Error updating login activity:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
     }
   }
 }
