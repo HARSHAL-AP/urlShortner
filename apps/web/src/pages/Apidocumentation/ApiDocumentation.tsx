@@ -1,13 +1,14 @@
 import { Flex,Heading,Text,Box,Image,VStack} from '@chakra-ui/react'
 import React from 'react'
 import ApidocsSidebar from '../../components/Dashboard/Apidocs/ApidocsSidebar'
-
+import { Outlet } from "react-router-dom";
+import Fotter from '../../components/Fotter/Fotter';
 type Props = {}
 
 const ApiDocumentation = (props: Props) => {
   return (
-    <Box w="100%" bg="white" border="1px solid red">
-    <Flex alignItems="center" bg="white" gap="10px" h="100px"  border="1px solid red">
+    <Box w="100%" bg="white" >
+    <Flex alignItems="center" bg="white" gap="10px" h="100px"  >
         <Heading ml="20px">
           Swiftlink 
         </Heading>
@@ -15,19 +16,20 @@ const ApiDocumentation = (props: Props) => {
             developer
         </Text>
     </Flex>
-    <Box w="100%"  border="1px solid red">
-     <Flex w="100%"  border="1px solid red">
-         <Box w="15%"  h="100vh" display={{ base: 'none', md: 'block' }}  border="1px solid red">
+    <Box w="100%"  >
+     <Flex w="100%"  >
+         <Box w="18%"  h="100vh" display={{ base: 'none', md: 'block' }}  >
          <ApidocsSidebar/>
 
          </Box>
-         <Box w={{ base: '100%', md: '100%' }}  border="1px solid red">
-            
+         <Box w={{ base: '100%', md: '100%' }}  >
+            <Outlet/>
 
          </Box>
      </Flex>
     </Box>
-    </Box>
+    
+    </Box>  
   )
 }
 
