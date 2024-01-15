@@ -81,7 +81,7 @@ const UserSchema: Schema<UserModel> = new Schema(
     lastLogin: { type: Date },
     isActive: { type: Boolean, required: true },
   },
-  { timestamps: true }
+ 
 );
 
 UserSchema.pre<UserModel>("save", async function (next) {

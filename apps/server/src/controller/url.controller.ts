@@ -8,7 +8,6 @@ import { SortOrder } from "mongoose";
 import { UserAgent } from "express-useragent";
 import { join } from "path";
 import { readFileSync } from "fs";
-
 interface DeviceData {
   _id: string;
   totalClicks: number;
@@ -90,13 +89,13 @@ class UrlController {
 
       if (url) {
         if (url.expiryDate && url.expiryDate < new Date()) {
-         
-          const htmlContent = readFileSync('./xpage.html', 'utf-8');
+       
+          const htmlContent =readFileSync(__dirname + '/xpage.html',`utf8`)
           
           res.status(403).send(htmlContent);
         } else {
           const accesinfo: any = {
-            ipAddress: req.ip ?? "Unknown",
+            ipAddress: req.ip ?? "Unknown", 
             location: "Unknown",
             timestamp: new Date().toISOString(),
           };

@@ -50,7 +50,7 @@ const Fotter: React.FC<FotterProps> = ({ signupfun }) => {
       <Box w="100%" pt="50px">
         <Flex w="80%" m="auto" flexDirection={{ base: "column", md: "row" }}>
           <Flex gap="20px" w="100%">
-            <Text as="b">Integration & API</Text>
+            <Text as="b" cursor="pointer" onClick={()=>navigate("/apidocs")}>Integration & API</Text>
             <Text as="b">URL Shortner</Text>
             <Text as="b">About</Text>
           </Flex>

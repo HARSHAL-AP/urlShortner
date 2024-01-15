@@ -37,9 +37,9 @@ const Sidebar: React.FC = () => {
             aria-label="Dashboard"
             icon={<FaHome />}
             size="md"
-            colorScheme="pink"
+            colorScheme="blue"
             mr={3}
-            variant={isRouteActive('/dashboard/home') ? 'solid' : 'outline'}
+            variant={isRouteActive('/dashboard/home') ? 'solid' : ''}
           />
           <Text as="b" fontSize="md" color={isRouteActive('/dashboard/home') ? 'black' : 'gray'}>
             Home
@@ -57,9 +57,9 @@ const Sidebar: React.FC = () => {
             aria-label="Create New URL"
             icon={<FaPlus />}
             size="md"
-            colorScheme="pink"
+            colorScheme="blue"
             mr={3}
-            variant={isRouteActive('/dashboard/create-new') ? 'solid' : 'outline'}
+            variant={isRouteActive('/dashboard/create-new') ? 'solid' : ''}
           />
           <Text as="b" fontSize="md" color={isRouteActive('/dashboard/create-new') ? 'black' : 'gray'}>
             Create New URL
@@ -77,9 +77,9 @@ const Sidebar: React.FC = () => {
             aria-label="Analytics"
             icon={<FaChartBar />}
             size="md"
-            colorScheme="pink"
+            colorScheme="blue"
             mr={3}
-            variant={isRouteActive('/dashboard/analytics') ? 'solid' : 'outline'}
+            variant={isRouteActive('/dashboard/analytics') ? 'solid' : ''}
           />
           <Text as="b" fontSize="md" color={isRouteActive('/dashboard/analytics') ? 'black' : 'gray'}>
             Analytics
@@ -97,9 +97,9 @@ const Sidebar: React.FC = () => {
             aria-label="Custom URLs"
             icon={<FaLink />}
             size="md"
-            colorScheme="pink"
+            colorScheme="blue"
             mr={3}
-            variant={isRouteActive('/dashboard/links') ? 'solid' : 'outline'}
+            variant={isRouteActive('/dashboard/links') ? 'solid' : ''}
           />
           <Text as="b" fontSize="md" color={isRouteActive('/dashboard/links') ? 'black' : 'gray'}>
             Links
@@ -117,9 +117,9 @@ const Sidebar: React.FC = () => {
             aria-label="API Integration"
             icon={<FaCog />}
             size="md"
-            colorScheme="pink"
+            colorScheme="blue"
             mr={3}
-            variant={isRouteActive('/dashboard/api') ? 'solid' : 'outline'}
+            variant={isRouteActive('/dashboard/api') ? 'solid' : ''}
           />
           <Text as="b" fontSize="md" color={isRouteActive('/dashboard/api') ? 'black' : 'gray'}>
             API Integration
