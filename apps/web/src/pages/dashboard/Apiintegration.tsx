@@ -26,124 +26,64 @@ import {
   ButtonGroup,
   Portal,
   PopoverFooter,
-
+  Center,
 } from "@chakra-ui/react";
 import Codeblock from "../../components/Dashboard/Codeblock";
+import { useNavigate } from "react-router-dom";
 const Apiintegration = () => {
-  const schimaforPostreq = `{
-  originalUrl:"string",
-  linkDescription:"string",
-  title:"string",
-  tags: ["string"],
-  expiryDate:"Date"
-}`;
-const reponce=`{ isError: false, shortUrl:Shortne URL  }`
-
+  const navigate=useNavigate()
   return (
     <Box w="99%" bg="white" borderRadius="15px" p="15px" textAlign="left">
       <Box w="100%" textAlign="left" ml="22px" mt="15px" fontSize="3xl">
         <Text as="b">API Intigration</Text>
       </Box>
 
-      <Box w="99%" ml="18px" mt="30px" fontSize="xl">
-        <Text>
-          Welcome to the URL Shortning API documentation! This API procvides a
-          simple and efficient way to shorten long URL's, Making them more
-          convenient for sharing. Follow the instructions below to integrate the
-          URL shortning functinality into your projects.
+      <Box w="75%" ml="18px" mt="30px" fontSize="xl" textAlign="justify">
+        <Text fontSize="xl" mt="25px" fontWeight="600">
+          Welcome to SwifLink APIs– Your Ultimate URL Shortener Solution!
         </Text>
-      </Box>
-      <Heading size="md" ml="22px" mt="30px" color="blue.800">
-        Base url
-      </Heading>
-      <Codeblock code="http://localhost:8080/url" />
-      <Heading size="md" ml="22px" mt="30px" color="blue.800">
-        Authentication
-      </Heading>
-      <Box w="99%" ml="18px" mt="15px" fontSize="18px">
-        <Text>
-          You'll need an API Access token, which you can acquire upon signing up
-          with us. Once registered, the token is assigned to your account,
-          enabling seamless integration and access to our services. To utilize
-          these services, it's essential to pass this access token with your
-          queries in the URL for authentication and secure usage.
+        <Text fontSize="lg" mt="25px">
+          In the fast-paced digital landscape, where brevity and efficiency
+          reign supreme, SwifLink emerges as your go-to URL shortening platform.
+          Designed with simplicity and user-friendliness in mind, SwifLink
+          empowers users to effortlessly create concise and shareable shortened
+          URLs, streamlining the way we share information online.
         </Text>
+        <Text fontSize="lg" mt="25px">
+          SwifLink isn't just a conventional URL shortener; it's a dynamic
+          platform equipped with a robust API, allowing seamless integration
+          into your projects and applications. Whether you're a developer
+          looking to enhance user experience or a business aiming to optimize
+          link management, SwifLink's API provides a versatile solution tailored
+          to your specific needs.
+        </Text>
+        <Text fontSize="lg" mt="25px">
+          Beyond simplifying URL management, SwifLink offers advanced analytics
+          to track the performance of your shortened links. Gain insights into
+          click-through rates, geographical location of users, and more,
+          enabling you to make data-driven decisions for your online presence.
+        </Text>
+        <Text fontSize="lg" mt="25px">
+          Additionally, SwifLink prioritizes security. Enjoy peace of mind with
+          features like link expiration, password protection, and access
+          controls. Whether you're sharing links personally or for business,
+          SwifLink ensures that your data and links are secure.
+        </Text>
+        <Center
+          w="30%"
+          h="35px"
+          bg="blue.400"
+          m="auto"
+          mt="25px"
+          color="white"
+          p="2"
+          borderRadius="10px"
+          cursor="pointer"
+          onClick={()=>navigate("/apidocs")}
+        >
+          Visit Documetation now
+        </Center>
       </Box>
-
-      <Codeblock code="http://localhost:8080/url?accessToken=youraccessToken" />
-      <Heading size="md" ml="22px" mt="30px" color="blue.800">
-        Create Shorten Url
-      </Heading>
-
-      <Flex w={{ base: "80%", md: "50%" }} ml="5%" mt="25px">
-        <Box w="30%">
-          <Text fontSize="17px" as="b">
-            Method:
-          </Text>
-        </Box>
-        <Box w="70%">
-          <Text fontSize="17px" as="b" ml="4">
-            POST
-          </Text>
-        </Box>
-      </Flex>
-      <Flex w={{ base: "80%", md: "50%" }} ml="5%" mt="15px" alignItems="center">
-        <Box w="30%">
-          <Text fontSize="17px" as="b">
-            Endpoint
-          </Text>
-        </Box>
-        <Box w="70%">
-          <Codeblock code="/shortner" />
-        </Box>
-      </Flex>
-      <Flex w={{ base: "80%", md: "50%" }} ml="5%">
-        <Box w="30%" mt="15px">
-          <Text fontSize="17px" as="b" >
-            Request Body Schema
-          </Text>
-        </Box>
-        <Box w="70%">
-          <Codeblock code={schimaforPostreq} />
-        </Box>
-      </Flex>
-      <Flex w={{ base: "80%", md: "50%" }} ml="5%">
-        <Box w="30%" mt="15px">
-          <Text fontSize="17px" as="b" >
-            Responce
-          </Text>
-        </Box>
-        <Box w="70%">
-          <Codeblock code={reponce} />
-        </Box>
-      </Flex>
-
-      <Heading size="md" ml="22px" mt="30px" color="blue.800">
-        How To visit Shortne URL
-      </Heading>
-
-      <Flex w={{ base: "80%", md: "50%" }} ml="5%" mt="25px">
-        <Box w="30%">
-          <Text fontSize="17px" as="b">
-            Method:
-          </Text>
-        </Box>
-        <Box w="70%">
-          <Text fontSize="17px" as="b" ml="4">
-           GET
-          </Text>
-        </Box>
-      </Flex>
-      <Flex w={{ base: "80%", md: "50%" }} ml="5%" mt="15px" alignItems="center">
-        <Box w="30%">
-          <Text fontSize="17px" as="b">
-            Endpoint
-          </Text>
-        </Box>
-        <Box w="70%">
-          <Codeblock code="http://localhost:8080/url/shortUrl" />
-        </Box>
-      </Flex>
     </Box>
   );
 };

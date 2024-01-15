@@ -61,10 +61,8 @@ const ShortenLink = (props: Props) => {
           Usage:
         </Text>
         <Box p={4} textAlign="left">
-          <Box>
-            <Text fontSize="lg" mt="25px">
-              To interact with the SwifLink API, follow these steps:
-            </Text>
+          <Box pl="35px">
+            
             <ol>
               <li>
                 <Text fontSize="md" mt="10px">

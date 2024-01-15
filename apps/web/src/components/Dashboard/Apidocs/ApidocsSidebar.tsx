@@ -27,21 +27,7 @@ const ApidocsSidebar = (props: Props) => {
       >
        Introduction
       </Flex>
-      <Flex
-        h="40px"
-        w="100%"
-        pl="2"
-        alignItems="center"
-        fontSize="0.9rem"
-        cursor="pointer"
-        fontWeight="500"
-        bg={isRouteActive('/apidocs/introduction')?"blue.100":"white"}
-        borderLeft={isRouteActive('/apidocs/introduction')?"3px solid blue":"0px"}
-        as={RouterLink}
-        to="/apidocs/introduction"
-      >
-       Creating Account 
-      </Flex>
+      
       <Flex
         h="40px"
         w="100%"

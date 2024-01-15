@@ -1,6 +1,7 @@
 import App from './app';
 import UrlRouter from './routes/url.route';
 import UserRouter from './routes/user.route';
+import Adminrouter from './routes/admin.route';
 import 'dotenv/config';
 import cluster from 'cluster';
 import os from 'os';
@@ -19,7 +20,7 @@ import os from 'os';
 //} else {
  
  
-  const app = new App([new UserRouter(), new UrlRouter()]);
+  const app = new App([new UserRouter(), new UrlRouter(),new Adminrouter()]);
 
   app.listen();
 //}

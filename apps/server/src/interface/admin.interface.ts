@@ -1,0 +1,38 @@
+import { Document } from "mongoose";
+
+export interface AdminModel extends Document {
+  userName: string;
+  email: string;
+  password: string;
+  createbyIp: string;
+  createdBydevice: {
+    type: any;
+    browser: any;
+    version: any;
+    os: any;
+    platform: any;
+  };
+  loginLogs: Array<{
+    ipAddress: string;
+    location: {
+      ip: string;
+      city: string;
+      region: string;
+      country:string;
+      loc:string;
+      org:string;
+      postal:string;
+      timezone:string;
+    };
+    timestamp: Date;
+    device: {
+      type: any;
+      browser: any;
+      version: any;
+      os: any;
+      platform: any;
+    };
+    isActive: boolean;
+    jwttoken:string;
+  }>;
+}

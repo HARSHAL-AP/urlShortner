@@ -2,7 +2,7 @@ import { Flex,Heading,Text,Box,Image,VStack} from '@chakra-ui/react'
 import React from 'react'
 import ApidocsSidebar from '../../components/Dashboard/Apidocs/ApidocsSidebar'
 import { Outlet } from "react-router-dom";
-import Fotter from '../../components/Fotter/Fotter';
+import ApidocsFotter from '../../components/Dashboard/Apidocs/ApidocsFotter';
 type Props = {}
 
 const ApiDocumentation = (props: Props) => {
@@ -24,11 +24,11 @@ const ApiDocumentation = (props: Props) => {
          </Box>
          <Box w={{ base: '100%', md: '100%' }}  >
             <Outlet/>
-
+        
          </Box>
      </Flex>
     </Box>
-    
+    <ApidocsFotter/>
     </Box>  
   )
 }

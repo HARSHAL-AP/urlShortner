@@ -20,7 +20,7 @@ export const verifyTokenMiddleware = (req: Request, res: Response, next: NextFun
   };
 
 
-//This middelware For verufying User By AccesToken ..
+
 export const verifyUserAccestoken=async(req:Request,res:Response,next:NextFunction)=>{
   const accessToken = req.query.accessToken;
   if (!accessToken) {

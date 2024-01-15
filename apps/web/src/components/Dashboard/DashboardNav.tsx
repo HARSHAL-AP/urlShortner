@@ -15,7 +15,10 @@ import {
   Heading,
   useBreakpointValue,
   Box,
-  Spacer,VStack,Divider,Button,InputRightElement,useToast
+  Spacer,VStack,Divider,Button,InputRightElement,useToast,  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbSeparator,
 } from "@chakra-ui/react";
 import { SearchIcon, MoonIcon, SunIcon, HamburgerIcon } from "@chakra-ui/icons";
 import Sidebar from "./Sidebar";
@@ -98,7 +101,7 @@ const handleLogout=async()=>{
        <Text size="2xl" as="b" display={{ base: "block", md: "none" }}>
         Swiftlink
        </Text>
-    
+       
       
           <InputGroup maxW="350px" bg="white" >
           
