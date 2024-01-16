@@ -19,13 +19,19 @@ import RetrivingMatrix from "../pages/Apidocumentation/RetrivingMatrix";
 import RedireactingLink from "../pages/Apidocumentation/RedireactingLink";
 import TruboolshotingTips from "../pages/Apidocumentation/TruboolshotingTips";
 import Authontication from "../pages/Apidocumentation/Authontication";
-
+import AdminDashboard from "../pages/AdminDashboard/AdminDashboard";
+import AdHome from "../pages/AdminDashboard/AdHome";
+import AdLinks from "../pages/AdminDashboard/AdLinks";
+import AdUrlAnalytics from "../pages/AdminDashboard/AdUrlAnalytics";
+import AdUserAnalytics from "../pages/AdminDashboard/AdUserAnalytics";
+import AdUsers from "../pages/AdminDashboard/AdUsers";
 
 const Allroutes = () => {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="apidocs" element={<ApiDocumentation />} >
+
       <Route index element={<Introduction />} />
       <Route path="introduction" element={<Introduction/>} />
       <Route path="authontication" element={<Authontication/>} />
@@ -34,8 +40,14 @@ const Allroutes = () => {
       <Route path="redireacting" element={<RedireactingLink/>} />
       <Route path="truboolshoting" element={<TruboolshotingTips/>} />
       </Route>
-      
-    
+      <Route path="admin" element={<AdminDashboard/>} >
+      <Route index element={<AdHome />} />
+      <Route path="home" element={<AdHome />} />
+      <Route path="urls" element={<AdLinks />} />
+      <Route path="urls_analytics" element={<AdUrlAnalytics />} />
+      <Route path="users_analytics" element={<AdUserAnalytics />} />
+      <Route path="users" element={<AdUsers/>}/>
+      </Route>
 
       <Route path="dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>}>
       <Route index element={<PrivateRoute><DashboardHome /></PrivateRoute>} />
