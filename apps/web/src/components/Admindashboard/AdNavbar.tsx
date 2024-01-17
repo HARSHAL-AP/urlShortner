@@ -73,7 +73,7 @@ const handleLogout=async()=>{
        </Text>
        
       
-          <InputGroup maxW="350px" bg="white" >
+          <InputGroup maxW="350px" bg="white" borderRadius="10px">
           
             <Input type="text" placeholder="Search..." value={text} onChange={(e)=>settext(e.target.value)}/>
             <InputRightElement  children={<SearchIcon />} onClick={handleSubmit} cursor="pointer"/>
