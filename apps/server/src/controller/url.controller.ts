@@ -8,6 +8,7 @@ import { SortOrder } from "mongoose";
 import { UserAgent } from "express-useragent";
 import { join } from "path";
 import { readFileSync } from "fs";
+
 interface DeviceData {
   _id: string;
   totalClicks: number;
@@ -29,8 +30,66 @@ interface AccessLog {
 class UrlController {
   //For Geting all urls
   async getAll(req: Request, res: Response): Promise<void> {
+    const { tags, startDate, endDate, search,sort } = req.query;
+
     try {
-      const data = await Url.find();
+      let query: any = { };
+
+      if (tags && typeof tags === "string") {
+        query.tags = { $in: tags.split(",") };
+      }
+      if (startDate && typeof startDate === "string") {
+        const parsedStartDate = new Date(`${startDate}T00:00:00.000Z`);
+        query.createdAt= { $gte: parsedStartDate };
+      }
+  
+      if (endDate && typeof endDate === "string") {
+        const parsedEndDate = new Date(`${endDate}T23:59:59.999Z`);
+        if (query.createdAt) {
+         
+          query.createdAt.$lte = parsedEndDate;
+        } else {
+          
+          query.createdAt= { $lte: parsedEndDate };
+        }
+      }
+      if (search && typeof search === "string") {
+       
+        query.$or =[
+          { shortUrl: { $regex: '\\b' + search, $options: 'i' } },
+          { title: { $regex: '\\b' + search, $options: 'i' } },
+          { tags: { $in: [search] } },
+        ];
+      }
+      
+      const sortOptions: { [key: string]: number } = {};
+      if (sort && typeof sort === "string") {
+        switch (sort) {
+          case "created_date":
+            sortOptions.createdAt = -1; // Sort by latest createdAt
+            break;
+          case "expiry_date":
+            sortOptions.expiryDate = -1; // Sort by latest expiryDate
+            break;
+          case "total_clicks_high":
+            sortOptions.accessCount = -1; // Sort by total clicks high to low
+            break;
+          case "total_clicks_low":
+            sortOptions.accessCount = 1; // Sort by total clicks low to high
+            break;
+          case "title_asc":
+            sortOptions.title = 1; // Sort titles in ascending order
+            break;
+          case "title_desc":
+            sortOptions.title = -1; // Sort titles in descending order
+            break;
+         
+        }
+      }
+  
+  
+      const data = await Url.find(query).sort(sortOptions as any);
+    
       res.status(200).json({
         isError: false,
         data,
