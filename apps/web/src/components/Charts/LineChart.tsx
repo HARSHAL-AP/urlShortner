@@ -49,7 +49,7 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
     };
   }, [data]);
 
-  return <canvas ref={chartRef} width="100%" height="600"></canvas>;
+  return <canvas ref={chartRef} ></canvas>;
 };
 
 export default LineChart;

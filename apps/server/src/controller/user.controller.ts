@@ -429,5 +429,125 @@ class UserController {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   }
+
+  async getAllAnalyticalData(req: Request, res: Response): Promise<void> {
+    try {
+      const locationData = await User.aggregate([
+        {
+          $group: {
+            _id: '$loginLogs.location.country',
+            count: { $sum: 1 },
+          },
+        },
+      ]);
+
+      const deviceData = await User.aggregate([
+        {
+          $group: {
+            _id: '$loginLogs.device.type',
+            count: { $sum: 1 },
+          },
+        },
+      ]);
+
+      const activeUsers = await User.countDocuments({ isActive: true });
+
+      const inactiveUsers = await User.countDocuments({ isActive: false });
+
+      const browserData = await User.aggregate([
+        {
+          $group: {
+            _id: '$loginLogs.device.browser',
+            count: { $sum: 1 },
+          },
+        },
+      ]);
+
+      // Other trend data based on your requirements...
+
+      res.status(200).json({
+        isError: false,
+        analyticalData: {
+          locationData,
+          deviceData,
+          activeUsers,
+          inactiveUsers,
+          browserData,
+          // Other trend data...
+        },
+      });
+    } catch (error) {
+      res.status(500).json({
+        isError: true,
+        error,
+      });
+    }
+  }
+  async getUserDetails(req: Request, res: Response): Promise<void> {
+    try {
+      const userId = req.params.userId;
+
+      // Retrieve user details and login activities
+      const user:any = await User.findById(userId);
+
+      if (!user) {
+         res.status(404).json({
+          isError: true,
+          message: 'User not found',
+        });
+      }
+
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+      const lastThirtyDaysActivities = user.loginLogs.filter(
+        (log:any) => log.timestamp >= thirtyDaysAgo
+      );
+
+      const lastSevenDaysActivities = user.loginLogs.filter(
+        (log:any) => log.timestamp >= sevenDaysAgo
+      );
+
+      const loginDevices = Array.from(
+        new Set(user.loginLogs.map((log:any) => log.device.type))
+      );
+
+      const loginLocations = Array.from(
+        new Set(user.loginLogs.map((log:any) => log.location.country))
+      );
+
+      const loginBrowsers = Array.from(
+        new Set(user.loginLogs.map((log:any) => log.device.browser))
+      );
+
+      const activeLoginDevices = user.loginLogs
+        .filter((log:any) => log.isActive)
+        .map((log:any) => log.device.type);
+
+      // Other analytics based on your requirements...
+
+      res.status(200).json({
+        isError: false,
+        userDetails: {
+          ...user,
+          lastThirtyDaysActivities,
+          lastSevenDaysActivities,
+          loginDevices,
+          loginLocations,
+          loginBrowsers,
+          activeLoginDevices,
+         
+        },
+      });
+    } catch (error) {
+      res.status(500).json({
+        isError: true,
+        error,
+      });
+    }
+  }
 }
 export default UserController;
