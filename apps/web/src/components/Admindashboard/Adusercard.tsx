@@ -1,0 +1,129 @@
+import React, { useState } from "react";
+import {
+  Box,
+  Avatar,
+  Flex,
+  Text,
+  Button,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  useDisclosure,
+  Stack,
+  FormControl,
+  FormLabel,
+  Input,
+  Heading,
+  IconButton,
+  Center,
+} from "@chakra-ui/react";
+import { FaEdit, FaCopy } from "react-icons/fa";
+import { BsQuestion } from "react-icons/bs";
+
+interface UserCardProps {
+  accessToken: string;
+  createbyIp: string;
+  createdAt: string;
+  email: string;
+  userName: string;
+  loginLogs: any;
+  updatedAt: string;
+}
+
+const Adusercard: React.FC<UserCardProps> = ({
+  accessToken,
+  createbyIp,
+  createdAt,
+  email,
+  userName,
+  loginLogs,
+  updatedAt,
+}) => {
+  const {
+    isOpen: isEditModalOpen,
+    onOpen: onEditModalOpen,
+    onClose: onEditModalClose,
+  } = useDisclosure();
+  const {
+    isOpen: isResetPasswordModalOpen,
+    onOpen: onResetPasswordModalOpen,
+    onClose: onResetPasswordModalClose,
+  } = useDisclosure();
+
+  return (
+    <>
+      <Flex
+        w={{ base: "100%", md: "100%" }}
+        border="1px"
+        borderColor="gray.200"
+        boxShadow="lg"
+        alignItems="center"
+        p="5"
+        mt="25px"
+        borderRadius="10px"
+      >
+        <Center w="100px" h="100px" borderRadius="50%" bg="blue.800">
+          <Heading color="white">{userName[0]}</Heading>
+        </Center>
+        <Box ml="15px">
+          <Heading size="xl" textAlign="left">
+            {userName}
+          </Heading>
+          <Box w="100%" textAlign="left">
+            {email}
+          </Box>
+        </Box>
+      </Flex>
+      <Box borderRadius="5px" p="4" mt="30px" mb="30px" bg="white" w="99%">
+        <Text fontSize="sm" fontWeight="bold" textAlign="left">
+          ACCESS TOKEN
+        </Text>
+        <Flex w="100%" mt="25px" gap="20px">
+          <Heading fontSize="2xl" mb="2">
+            {accessToken}
+          </Heading>
+          <Button size="sm" colorScheme="green">
+            <FaCopy />
+          </Button>
+        </Flex>
+      </Box>
+      <Flex
+        w={{ base: "100%", md: "100%" }}
+        bg="white"
+        alignItems="center"
+        p="5"
+        mt="25px"
+        borderRadius="10px"
+      >
+        {/* <Button onClick={onEditModalOpen}>Edit User</Button>*/}
+        
+      </Flex>
+
+      {/* Edit User Modal */}
+      <Modal isOpen={isEditModalOpen} onClose={onEditModalClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalCloseButton />
+          <ModalBody></ModalBody>
+        </ModalContent>
+      </Modal>
+
+      {/* Reset Password Modal */}
+      <Modal
+        isOpen={isResetPasswordModalOpen}
+        onClose={onResetPasswordModalClose}
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalCloseButton />
+          <ModalBody></ModalBody>
+        </ModalContent>
+      </Modal>
+    </>
+  );
+};
+
+export default Adusercard;

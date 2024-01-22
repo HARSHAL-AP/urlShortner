@@ -25,6 +25,9 @@ import AdLinks from "../pages/AdminDashboard/AdLinks";
 import AdUrlAnalytics from "../pages/AdminDashboard/AdUrlAnalytics";
 import AdUserAnalytics from "../pages/AdminDashboard/AdUserAnalytics";
 import AdUsers from "../pages/AdminDashboard/AdUsers";
+import AduserdDash from "../pages/AdminDashboard/AduserdDash";
+import AdUrlDash from "../pages/AdminDashboard/AdUrlDash";
+
 
 const Allroutes = () => {
   return (
@@ -39,14 +42,17 @@ const Allroutes = () => {
       <Route path="retriving_matrix" element={<RetrivingMatrix/>} />
       <Route path="redireacting" element={<RedireactingLink/>} />
       <Route path="truboolshoting" element={<TruboolshotingTips/>} />
+     
       </Route>
       <Route path="admin" element={<AdminDashboard/>} >
       <Route index element={<AdHome />} />
       <Route path="home" element={<AdHome />} />
       <Route path="urls" element={<AdLinks />} />
+      <Route path="urls/:id" element={<AdUrlDash />} />
       <Route path="urls_analytics" element={<AdUrlAnalytics />} />
       <Route path="users_analytics" element={<AdUserAnalytics />} />
       <Route path="users" element={<AdUsers/>}/>
+      <Route path="users/:id" element={<AduserdDash/>}/>
       </Route>
 
       <Route path="dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>}>
