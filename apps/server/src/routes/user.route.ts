@@ -13,7 +13,7 @@ class Userrouter{
     this.router.use(verifyDevice)
   }
   private initializeRoutes() {
-    this.router.get(`${this.path}/getall`,this.userController.getAll)
+    
     this.router.get(`${this.path}/getuser`,verifyTokenMiddleware,this.userController.getUserdata)
     this.router.post(`${this.path}/register`,this.userController.register)
     this.router.post(`${this.path}/login`,this.userController.login)
@@ -24,6 +24,11 @@ class Userrouter{
     this.router.patch(`${this.path}/updatepassword`,verifyTokenMiddleware, this.userController.updatpassword);
     this.router.put(`${this.path}/update/:userId`,verifyTokenMiddleware, this.userController.updateUser);
     this.router.delete(`${this.path}/delete/:userId`,verifyTokenMiddleware, this.userController.deleteUser);
+
+    //for admin only 
+    this.router.get(`${this.path}/getall`,this.userController.getAll)
+    this.router.get(`${this.path}/all_user_analytics`,this.userController.getAllAnalyticalData)
+    this.router.get(`${this.path}/get_user_analytics/:userId`,this.userController.getUserDetails)
   }
 
 

@@ -31,6 +31,8 @@ import { getData } from "../../services/api";
 import { getUrl } from "../../redux/urlSlice";
 import { useLocation } from "react-router-dom";
 import NoData from "../../components/NoData";
+import { BsThreeDotsVertical } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
 
 type Props = {};
 
@@ -39,7 +41,7 @@ const AdUsers = (props: Props) => {
   const [loading, setLoading] = React.useState(false);
   const dispatch = useDispatch();
   const location = useLocation();
-
+  const navigate=useNavigate()
   const [data, setdata] = useState([]);
   const [prevQueryParams, setPrevQueryParams] = useState<string>("");
   useEffect(() => {
@@ -94,7 +96,7 @@ const AdUsers = (props: Props) => {
                 <Th>User Name</Th>
                 <Th>Email</Th>
                 <Th>Acive since </Th>
-                <Th>dumy</Th>
+                <Th></Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -105,14 +107,19 @@ const AdUsers = (props: Props) => {
                       <Td>{el.userName}</Td>
                       <Td>{el.email}</Td>
                       <Td>{el.createdAt}</Td>
-                      <Td>tect</Td>
+                      <Td cursor="pointer" onClick={()=>navigate(`/admin/users/${el._id}`)}><BsThreeDotsVertical/></Td>
                     </Tr>
                   );
                 })}
+
             </Tbody>
           </Table>
         </TableContainer>
-      
+
+     
+
+
+
     </Box>
   );
 };
