@@ -34,6 +34,7 @@ export interface UserModel extends Document {
       os: any;
       platform: any;
     };
+    jwtToken:string;
     isActive: boolean;
   }>;
   accessToken: string;

@@ -92,6 +92,7 @@ class UserController {
         ipAddress: req.ip ?? "Unknown",
         location: locationInfo,
         device: deviceInfo,
+        jwtToken:token,
         isActive: true,
       };
 
@@ -154,10 +155,17 @@ class UserController {
         ipAddress: req.ip ?? "Unknown",
         location: locationInfo,
         device: deviceInfo,
+        jwtToken:token,
         isActive: true,
         timestamp: Date.now(),
       };
-
+      const newlogs=user.loginLogs.map((el:any)=>{
+        if(el.ipAddress==req.ip && el.isActive){
+          el.isActive=false
+        }
+        return el 
+      })
+      user.loginLogs=newlogs
       user.loginLogs.push(loginIp);
       user.lastLogin = new Date();
       await user.save();
