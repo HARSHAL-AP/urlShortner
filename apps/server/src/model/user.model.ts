@@ -22,6 +22,7 @@ interface UserLoginLog {
     postal: string;
     timezone: string;
   };
+  jwtToken:string;
   isActive: boolean;
 }
 
@@ -73,6 +74,7 @@ const UserSchema: Schema<UserModel> = new Schema(
           platform: { type: String },
         },
         timestamp: { type: Date, default: Date.now },
+        jwtToken:{type:String,require:true},
         isActive:{type:Boolean}
       },
     ],

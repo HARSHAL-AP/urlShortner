@@ -100,8 +100,8 @@ const AduserdDash = (props: Props) => {
         Urls
       </Text>
 
-      <Box w="100%" h="600px"  mt="15px" overflow="auto">
-      <TableContainer w="98%" bg="white" ml="15px" p="3" mt="15px">
+      <Box w="100%" h="600px"  mt="15px" overflow="auto" >
+      <TableContainer w="98%" bg="white" ml="15px" p="3" mt="15px" >
           <Table >
             <Thead>
               <Tr>
