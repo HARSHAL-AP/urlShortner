@@ -10,6 +10,7 @@ interface UrlState {
     locations:any;
     statsForLastthirtyDays:any;
   }
+  tag:any;
 }
 
 const initialState: UrlState = {
@@ -20,7 +21,8 @@ const initialState: UrlState = {
     devices:[],
     locations:[],
     statsForLastthirtyDays:[],
-  }
+  },
+  tag:[],
 };
 
 const urlSlice = createSlice({
@@ -43,6 +45,12 @@ const urlSlice = createSlice({
       return {
         ...initialState,
         singleurl:action.payload
+      }
+    },
+    getalltags:(state,action)=>{
+      return {
+        ...initialState,
+        tags:action.payload
       }
     }
   },
