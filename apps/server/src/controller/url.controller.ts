@@ -351,6 +351,18 @@ class UrlController {
       res.status(500).json({ error: "Internal Server Error" });
     }
   }
+    // for getting all tags associated without accesToken this is for Admin only 
+    async getalltagdata(req: Request, res: Response): Promise<void> {
+      const { accessToken } = req.body;
+  
+      try {
+        const tags = await Url.distinct("tags");
+  
+        res.status(200).json({ isError: false, data: tags.filter(Boolean) });
+      } catch (error) {
+        res.status(500).json({ error: "Internal Server Error" });
+      }
+    }
   // For Getting all urls by accestoken
   async getallUrlsByaccessToken(req: Request, res: Response): Promise<void> {
     const { accessToken } = req.body;
@@ -637,6 +649,156 @@ class UrlController {
       const expiringSoonUrls = await Url.find({
         expiryDate: { $gte: currentDate },
         accessToken,
+      });
+  
+      var clicksByDevices = await Url.aggregate([
+        {
+          $match: query,
+        },
+        {
+          $unwind: "$accessLogs",
+        },
+        {
+          $group: {
+            _id: "$accessLogs.device.type",
+            totalClicks: { $sum: 1 },
+          },
+        },
+      ]);
+      clicksByDevices = clicksByDevices.map((device: DeviceData) => ({
+        name: device._id,
+        totalClicks: device.totalClicks,
+        fill: getColorForDevice(device._id),
+      }));
+  
+      const clicksByLocation = await Url.aggregate([
+        {
+          $match: query,
+        },
+        {
+          $unwind: "$accessLogs",
+        },
+        {
+          $group: {
+            _id: "$accessLogs.location",
+            totalClicks: { $sum: 1 },
+          },
+        },
+      ]);
+  
+      res.status(200).json({
+        statsForLastSevenDays,
+        totalClicks: totalClicks.length > 0 ? totalClicks[0].totalClicks : 0,
+        mostTrendingLinks,
+        expiringSoonUrls,
+        clicksByDevices,
+        clicksByLocation,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+  // this is for admin to get all statiscs data about all urls present in database:-
+  async getAllStatsdata(req: Request, res: Response): Promise<void> {
+    const { tags, startDate, endDate, search } = req.query;
+
+    try {
+      let query: any = {  };
+  
+      if (tags) {
+        const tagsArray = Array.isArray(tags) ? tags : [tags];
+        query.tags = { $in: tagsArray };
+      }
+  
+      if (startDate && typeof startDate === "string") {
+        const parsedStartDate = new Date(`${startDate}T00:00:00.000Z`);
+        query.createdAt = { $gte: parsedStartDate };
+      }
+  
+      if (endDate && typeof endDate === "string") {
+        const parsedEndDate = new Date(`${endDate}T23:59:59.999Z`);
+        if (query.createdAt) {
+          query.createdAt.$lte = parsedEndDate;
+        } else {
+          query.createdAt = { $lte: parsedEndDate };
+        }
+      }
+  
+      const statsForLastSevenDays = [];
+      const currentDate = new Date();
+  
+      for (let i = 0; i < 7; i++) {
+        const currentDateStart = new Date(currentDate);
+        currentDateStart.setDate(currentDate.getDate() - i);
+        currentDateStart.setHours(0, 0, 0, 0);
+  
+        const currentDateEnd = new Date(currentDateStart);
+        currentDateEnd.setHours(23, 59, 59, 999);
+  
+        const dailyQuery = { ...query, createdAt: { $gte: currentDateStart, $lte: currentDateEnd } };
+  
+        const newUrls = await Url.find(dailyQuery);
+  
+        const totalClicksForCurrentDay = await Url.aggregate([
+          {
+            $match: {
+              "accessLogs.timestamp": {
+                $gte: currentDateStart,
+                $lte: currentDateEnd,
+              }
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              totalClicks: { $sum: "$accessCount" },
+              urls: { $push: "$$ROOT" },
+            },
+          },
+        ]);
+  
+        const expiringUrls = await Url.find({
+          expiryDate: { $gte: currentDateStart, $lte: currentDateEnd }
+        });
+  
+        const dayName = currentDateStart.toLocaleDateString("en-US", {
+          weekday: "short",
+        });
+  
+        statsForLastSevenDays.push({
+          date: currentDateStart.toISOString().split("T")[0],
+          dayName,
+          newUrls,
+          totalClicksForCurrentDay:
+            totalClicksForCurrentDay.length > 0
+              ? totalClicksForCurrentDay[0].totalClicks
+              : 0,
+          expiringUrls,
+        });
+      }
+  
+      const totalClicks = await Url.aggregate([
+        {
+          $match: query,
+        },
+        {
+          $group: {
+            _id: null,
+            totalClicks: { $sum: "$accessCount" },
+          },
+        },
+      ]);
+  
+      const mostTrendingLinks = await Url.aggregate([
+        { $match: query },
+        { $sort: { accessCount: -1 } },
+        { $limit: 5 },
+      ]);
+  
+      const expiringSoonUrls = await Url.find({
+        expiryDate: { $gte: currentDate },
+       
       });
   
       var clicksByDevices = await Url.aggregate([

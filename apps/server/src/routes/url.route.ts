@@ -15,8 +15,11 @@ class UrlRouter {
   }
   private initializeRoutes() {
     
-    //Get all Data 
-    this.router.get(`${this.path}/getall`, this.urlController.getAll)//
+    //Get all Data Speficsc Routs accisable for Admin Only :-  
+    this.router.get(`${this.path}/getall`, this.urlController.getAll)
+    this.router.get(`${this.path}/getallurltags`, this.urlController.getalltagdata)
+    this.router.get(`${this.path}/getallurlstats`, this.urlController.getAllStatsdata)
+
    
     //Get Urls Data on diffrant params
     this.router.get(`${this.path}/geturls`,verifyUserAccestoken, this.urlController.getallUrlsByaccessToken)

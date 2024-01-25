@@ -16,9 +16,63 @@ import {
   Spacer,
   Text,Image
 } from "@chakra-ui/react";
+import Filters from "../../components/Dashboard/Filters";
+import Piecahrt from "../../components/Dashboard/Analytics/Piecahrt";
+import { MdOutlineTrendingUp } from "react-icons/md";
+import LinkCard2 from "../../components/Dashboard/Analytics/Linkcards2";
+import Expirinurls from "../../components/Dashboard/Analytics/Expirinurls";
+import Mostview from "../../components/Dashboard/Analytics/Mostview";
+import { RootState } from "../../redux/store";
+import { useDispatch,useSelector } from "react-redux";
+import { getAllstats } from "../../redux/urlSlice";
+import Clickbylocation from "../../components/Dashboard/Analytics/Clickbylocation";
+import { useLocation } from "react-router-dom";
+import { getData } from "../../services/api";
 type Props = {}
 
 const AdUrlAnalytics = (props: Props) => {
+  const [scrollBehavior, setScrollBehavior] = React.useState("inside");
+  const location = useLocation();
+  const [prevQueryParams, setPrevQueryParams] = useState<string>("");
+  const analyticsData = useSelector(
+    (state: RootState) => state.urls.analytics
+  );
+  const [loading, setLoading] = React.useState(false);
+  const dispatch = useDispatch();
+  const today = new Date();
+  const formattedDate = today.toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+  useEffect(()=>{
+   
+    const getdata = async () => {
+      try {
+        setLoading(true)
+        const queryParams = location.search 
+        const response= await getData(`/url/getallurlstats${queryParams}`);
+        dispatch(getAllstats(response))
+       } catch (error) {
+        alert("Internal Server Error");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getdata();
+    if (location.search !== prevQueryParams) {
+  
+      setPrevQueryParams(location.search);
+
+    }
+    
+  },[dispatch, location.search, prevQueryParams])
+  if(loading){
+    return <Box w="5%" m="auto" mt="25vh">
+      <Image w="100%" src="https://cdn.pixabay.com/animation/2023/05/02/04/29/04-29-06-428_512.gif" alt="" />
+    </Box>
+  }
   return (
     <Box mx="auto" w="100%">
     <Heading as="h3" size="lg" textAlign="left" mt="20px" ml="30px">
@@ -43,17 +97,18 @@ const AdUrlAnalytics = (props: Props) => {
           <Box w="100%" mt="20px">
             <Flex alignItems="center" m="auto" justifyContent="center">
               
-              <Heading fontSize="30px">{654998} </Heading>
+              <Heading fontSize="30px">{formattedDate}  </Heading>
             </Flex>
             <Flex alignItems="center" m="auto" justifyContent="center">
               
               <Heading fontSize="24px" color="green">
-               {589}+ Clikcs
+              {analyticsData.totalClicks}+ Clikcs
               </Heading>
             </Flex>
           </Box>
         </Box>
-    
+        <Expirinurls data={analyticsData.expiringSoonUrls}/>
+         <Mostview data={analyticsData.mostTrendingLinks}/>
         </Box>
       
       <Box w="50%">
@@ -75,7 +130,7 @@ const AdUrlAnalytics = (props: Props) => {
             w="100%"
             mt="20px"
           >
-          
+           <Piecahrt />
           
           </Flex>
         </Box>
@@ -98,7 +153,7 @@ const AdUrlAnalytics = (props: Props) => {
             <Heading size="sm">Clicks by Location</Heading>
            
           </Flex>
-         
+          <Clickbylocation/>  
         </Box>
       </Box>
     </Flex>
